@@ -1,0 +1,234 @@
+.sidebar {
+    flex: 3;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    position: sticky;
+    top: 50px;
+}
+
+.hamburger {
+    display: none;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #aaa;
+}
+
+.sidebarWrapper {
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebarList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.sidebarListItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.sidebarIcon {
+    margin-right: 15px;
+}
+
+.sidebarButton {
+    cursor: pointer;
+    width: 150px;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: 200ms ease transform;
+}
+
+.sidebarButton:active {
+    transform: scale(0.7);
+}
+
+.sidebarHr {
+    margin-block: 20px;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.434);
+}
+
+.sidebarFriendList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebarFriend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.sidebarFriendImg {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        flex: 0;
+        transform: translateX(-101%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: white;
+        z-index: 1000;
+        padding-bottom: 0;
+        overflow-y: hidden;
+        transition: 500ms ease transform;
+    }
+
+    .sidebar .sidebarWrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hidden {
+        display: block;
+    }
+
+    .closeBtn { 
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        border-radius: 10px;
+        width: 65px;
+        padding: 8px 12px;
+        font-family: 'Edu VIC WA NT Beginner', cursive;
+        background-color: rgb(70, 70, 150);
+        font-weight: bold;
+        color: white;
+        border: none;
+        outline: none;
+        transition: 250ms ease transform;
+        z-index: 10000;
+    }
+
+    .openSidebar {
+        animation: openSidebar 500ms ease forwards 1s;
+    }
+
+    .closeSidebar {
+        animation: closeSidebar 500ms ease forwards;
+    }
+
+    .hamburger {
+        display: block;
+        position: fixed;
+        top: 60px;
+        left: 5px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border:1px solid black;        
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hamburger .bar{
+        width: 25px;
+        height: 2px;
+        position: relative;
+        background-color: black;
+        margin-block: 6px;
+    }
+
+    .topBar {
+        background-color: black;
+        height: 2px;
+        width: 25px;    
+    }
+    .bottomBar {
+        background-color: black;
+        height: 2px;
+        width: 25px;   
+    }
+
+    .open .bar {
+        animation: barCenter 500ms ease forwards;
+        margin: 0;
+    }
+
+    .open .topBar {
+        animation: barTop 500ms ease forwards 500ms;
+    }
+    .open .bottomBar {
+        animation: barBottom 500ms ease forwards 500ms;
+    }
+}
+
+@keyframes openSidebar {
+    0% {
+        transform: translateX(-101%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes closeSidebar {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-101%);
+    }
+}
+
+@keyframes barCenter {
+    0% {
+        width: 100%;
+    }
+    100% {
+        width: 0px;
+    }
+}
+
+@keyframes barTop {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(45deg);
+    }
+}
+@keyframes barBottom {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        margin-top: -4px;
+        transform: rotate(-45deg);
+    }
+}

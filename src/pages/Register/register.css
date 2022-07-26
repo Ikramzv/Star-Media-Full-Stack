@@ -1,0 +1,152 @@
+.register {
+    width: 100vw;
+    height: 100vh;
+    background-color: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+.registerWrapper {
+    width: 90%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    padding-inline: 20px;
+}
+
+.registerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    
+}
+
+.registerRight {
+    flex: 1;
+    height: auto;
+}
+
+.registerBox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.registerBox form {
+    margin-top: 80px;
+    width: 80%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.registerBox form fieldset {
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    
+}
+
+legend {
+    background-color: crimson;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: 'Edu VIC WA NT Beginner', cursive;
+    color: white;
+    width: 200px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.registerFormInputs {
+    display: grid;
+    grid-template-columns: repeat(2 , minmax(0 , 1fr));
+    gap: 10px;
+}
+
+.registerFormInput {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.registerFormInput > input {
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    outline: none;
+    transition: 500ms ease box-shadow;
+}
+
+.registerFormInput > label {
+    text-align: center;
+    font-weight: bold;
+}
+
+fieldset input[type='submit'], .backToLogin {
+    padding: 10px 20px;
+    background-color: crimson;
+    color: white;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    width: 200px;
+    margin-block: 20px;
+    transition: 300ms ease transform;
+    cursor: pointer;
+}
+
+fieldset input[type='submit']:active , .backToLogin:active {
+    transform: scale(0.6);
+}
+
+.backToLogin {
+    margin-block: 10px;
+}
+
+.registerFormInput > input:focus {
+    box-shadow: 0 1px 2px 0 black;
+}
+
+.registerLogo {
+    font-size: 60px;
+    font-family: 'Edu VIC WA NT Beginner', cursive;
+}
+
+.registerRegisterText {
+    user-select: none;
+    font-weight: 300;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .registerLogo {
+        font-size: 40px;
+    }
+
+    .registerBox {
+        width: 100vw;
+    }
+
+    .registerWrapper {
+        flex-direction: column;
+        padding-inline: 10px;
+    }
+
+    .registerFormInputs {
+        grid-template-columns: 1fr;
+    }
+}

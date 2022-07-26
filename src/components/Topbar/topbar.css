@@ -1,0 +1,197 @@
+.topbar-container {
+    width: 100vw;
+    height: 50px;
+    background-color: rgb(120, 25, 44);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.topbar-left {
+    flex: 3;
+}
+
+.logo {
+    font-family: 'Edu VIC WA NT Beginner', cursive;
+    font-size: 24px;
+    margin-left: 20px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: 500ms ease all;
+}
+
+.logo:hover {
+    color: #ebeaff;
+}
+
+.topbar-center {
+    flex: 5;
+}
+
+.searchbar {
+    width: 100%;
+    height: 30px;
+    background-color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.search-icon {
+    font-size: 25px !important;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.searchInput {
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 6px 8px;
+    transition: 500ms ease all;
+}
+
+.searchInput:focus {
+    background-color: #7f77f269;
+}
+
+.topbar-right {
+    flex: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.topbar-link {
+    margin-inline: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.topbar-icons {
+    display: flex;
+    align-items: center;
+}
+
+.topbar-icon-item {
+    margin-right: 15px;
+    cursor: pointer;
+    position: relative;
+}
+
+.topbar-icon-badge {
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    color: white;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+}
+
+.topbar-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+
+    .hidden {
+        display: block !important;
+    }
+
+    .logo {
+        font-size: 16px;
+        margin-inline: 5px;
+    }
+
+    .topbar-center.hideCenter {
+        animation: hide 300ms ease forwards 600ms;
+    }
+
+    .topbar-right {
+        transform: translateX(40%);
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .topbar-right.growRight {
+        animation: growRight 500ms ease forwards 300ms;
+    }
+
+    .topbar-right.growBack {
+        animation: growBack 500ms ease forwards;
+    }
+
+    .rotate {
+        animation: rotate 300ms ease forwards;
+    }
+    .rotateBack {
+        animation: rotateBack 300ms ease forwards;
+    }
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(180deg);
+    }
+}
+@keyframes rotateBack {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes growRight {
+    0% {
+        transform: translateX(40%);
+        flex: 1;
+        overflow: hidden;
+    }
+    100% {
+        flex: 4;
+        overflow: visible;
+        transform: translateX(0);
+    }
+}
+
+@keyframes growBack {
+    0% {
+        flex: 4;
+        overflow: visible;
+        transform: translateX(0px);
+    }
+    100% {
+        flex: 1;
+        transform: translateX(40%);
+        overflow: hidden;
+    }
+}
+
+@keyframes hide {
+    0% {
+        flex: 5;
+        overflow: visible;
+    }
+    100% {
+        flex: 0;
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,192 @@
+.rightbar {
+    flex: 4;
+}
+
+.rightbarWrapper {
+    padding: 20px 20px 0 0;
+    width: 100%;
+    height: 700px;
+    overflow-y: auto;
+    position: sticky;
+    top: 50px;
+}
+
+.rightbarWrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.birthdayContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.birthdayImg {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.birthdayText {
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.rightbarAd {
+    width: 100%;
+    margin-block: 30px;
+    border-radius: 10px;
+}
+
+.rightbarTitle {
+    margin-bottom: 10px;
+}
+
+.rightbarFriendList {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    overflow-y: auto;
+}
+
+.rightbarFriend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.rightbarImgContainer {
+    margin-right: 10px;
+    position: relative;
+}
+
+.rightbarImgContainer > img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.rightbarImgContainer > span {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgb(4, 87, 4);
+    border: 2px solid white;
+}
+
+.rightbarUsername {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .rightbar {
+        flex: 0;
+        transform: translateX(120%);
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background-color: white;
+        z-index: 100000;
+        top: 0;
+        left: 0;
+    }
+
+    .rightbarWrapper {
+        padding: 50px 20px 20px;
+        width: 100vw;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .birthdayContainer {
+        gap: 10px;
+    }
+
+    .openRightbar {
+        animation: openRightbar 500ms ease forwards 1s;
+    }
+    .closeRightbar {
+        animation: closeRightbar 500ms ease forwards;
+    }
+
+    .hidden {
+        display: block;
+    }
+
+    .hamburgerRight {
+        display: block;
+        position: fixed;
+        top: 60px;
+        right: 5px;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border:1px solid black;        
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(95, 135, 95);
+    }
+
+    .openRightHamburger .bar{
+        animation: barCenter 500ms ease forwards;
+        margin: 0;
+    }
+    .openRightHamburger .topRightbar{
+        animation: barTop 500ms ease forwards 500ms;
+
+    }
+    .openRightHamburger .bottomRightbar{
+        animation: barBottom 500ms ease forwards 500ms;
+    }
+
+    .bar {
+        left: 0;
+        width: 25px;
+        height: 2px;
+        background-color: black;
+        margin-block: 6px;
+    }
+    .topRightbar {
+        left: 0;
+        width: 25px;
+        height: 2px;
+        background-color: black;
+    }
+    .bottomRightbar {
+        left: 0;
+        width: 25px;
+        height: 2px;
+        background-color: black;
+    }
+}
+
+
+@keyframes openRightbar {
+    0% {
+        transform: translateX(120%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes closeRightbar {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(120%);
+    }
+}

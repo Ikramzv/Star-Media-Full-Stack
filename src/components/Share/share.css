@@ -1,0 +1,109 @@
+.share {
+    width: 100%;
+    height: 170px;
+    border-radius: 10px;
+    box-shadow: 4px 4px 5px 2px rgba(0,0,0,0.5);
+}
+
+.shareWrapper {
+    padding: 20px;
+}
+
+.shareTop {
+    display: flex;
+    align-items: center;
+}
+
+.shareTopImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.shareInput {
+    border: none;
+    outline: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 20px;
+    transition: 500ms ease all;
+}
+
+.shareInput:focus {
+    box-shadow: 1px 2px 3px 0 hsl(125, 70%, 10%);
+}
+
+.shareHr {
+    margin-block: 15px;
+}
+
+.shareBottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.shareOptions {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shareOption {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 15px;
+    transition: 700ms ease transform;
+}
+
+.shareOption:hover {
+    transform: scale(1.095);
+}
+
+.shareIcon {
+    font-size: 16px !important;
+    margin-right: 10px;
+}
+
+.shareOptionText {
+    font-size: 14px;
+}
+
+.shareBtn {
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    background:  rgb(124, 39, 56);
+    background-blend-mode: darken;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 500ms ease background-color , 300ms linear transform;
+    margin-top: 15px;
+}
+
+.shareBtn:hover {
+    background-color: crimson;
+}
+
+.shareBtn:active {
+    transform: scale(0.7);
+}
+
+@media (max-width: 768px) {
+    .share {
+        height: 200px;
+    }
+
+    .shareOption {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .shareOption .shareIcon {
+        margin: 0;
+    }
+}
