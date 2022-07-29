@@ -6,6 +6,7 @@ import Login from './pages/Login/Login'
 import HomeLayout from './Layout/HomeLayout'
 import Register from './pages/Register/Register'
 import { useSelector } from 'react-redux'
+import Mesenger from './pages/Messenger/Mesenger'
 
 function App() {
   const user = useSelector(state => state.user.user)
@@ -23,6 +24,7 @@ function App() {
         <Route path='/' element={<HomeLayout />} >
           <Route path='/home' element={<Home />} />
           <Route path='/profile/:id' element={<Profile />} />
+          <Route path='/messenger' element={<Mesenger />} />
         </Route>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

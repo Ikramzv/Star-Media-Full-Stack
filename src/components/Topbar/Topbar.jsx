@@ -59,7 +59,10 @@ function Topbar() {
             <Person />
             <span className="topbar-icon-badge">1</span>
           </div>
-          <div className="topbar-icon-item">
+          <div
+            className="topbar-icon-item"
+            onClick={() => navigate("/messenger")}
+          >
             <Chat />
             <span className="topbar-icon-badge">2</span>
           </div>

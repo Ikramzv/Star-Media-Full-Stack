@@ -1,0 +1,59 @@
+.messenger {
+    height: calc(100vh - 50px);
+    width: 100vw;
+    display: flex;
+    gap: 10px;
+}
+
+.chatMenu {
+    flex: 3;
+}
+.chatBox {
+    flex: 4;
+}
+.chatOnline {
+    flex: 3;
+}
+
+.chatFriendInput {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.412);
+    transition: 300ms ease background-color;
+}
+
+.chatFriendInput:focus {
+    background-color: #7f77f269;
+    border-color: #7f77f269;
+}
+
+.chatList {
+    padding: 10px;
+    transition: 300ms ease background-color;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.chatList:hover {
+    background-color: rgba(0, 0, 0, 0.185);
+}
+
+.chatList.active {
+    background-color: rgba(0, 0, 0, 0.185);
+}
+
+.chatListItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chatListItemImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
