@@ -5,7 +5,11 @@ function Online({ user }) {
     <>
       <li className="rightbarFriend">
         <div className="rightbarImgContainer">
-          <img src={user.img} alt="" className="rightbarImg" />
+          <img
+            src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
+            alt=""
+            className="rightbarImg"
+          />
           <span className="rightbarOnline"></span>
         </div>
         <span className="rightbarUsername">{user.username}</span>

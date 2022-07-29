@@ -88,6 +88,38 @@
     display: none;
 }
 
+
+.rightbarFollowBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 6px 8px;
+    border-radius: 10px;
+    width: 100px;
+    background-color: hsl(240, 50%, 50%);
+    color: white;
+    font-family: 'Edu VIC WA NT Beginner', cursive;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 10px;
+    transition: 400ms ease background-color , 100ms ease transform;
+}
+
+.rightbarFollowBtn:hover {
+    background-color: hsl(240, 50%, 40%);
+}
+
+.rightbarFollowBtn:active {
+    transform: scale(0.8);
+}
+
+.rightbarFollowBtn > span > svg {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 16px !important;
+    padding-top: 2px;
+}
+
 @media (max-width: 768px) {
     .rightbar {
         flex: 0;

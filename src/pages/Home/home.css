@@ -1,4 +1,15 @@
 .homeContainer {
     display: flex;
     width: 100%;
+    animation: grow 500ms cubic-bezier(0.68, 0.15, 0.265, 1.05);
+}
+
+@keyframes grow {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

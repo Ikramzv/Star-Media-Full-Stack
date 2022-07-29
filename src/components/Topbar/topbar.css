@@ -1,7 +1,7 @@
 .topbar-container {
     width: 100vw;
     height: 50px;
-    background-color: rgb(120, 25, 44);
+    background-color: rgb(97, 8, 26);
     display: flex;
     align-items: center;
     position: sticky;
@@ -88,9 +88,10 @@
 .topbar-icon-badge {
     width: 15px;
     height: 15px;
-    background-color: red;
+    background-color: rgb(255, 255, 255);
     border-radius: 50%;
-    color: white;
+    color: crimson;
+    font-weight: bold;
     position: absolute;
     top: -5px;
     right: -5px;
@@ -99,16 +100,83 @@
     font-size: 12px;
 }
 
+.topbarDropdown {
+    position: relative;
+    margin-right: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
 .topbar-img {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 10px;
+}   
+
+.dropdownList {
+    position: absolute;
+    top: 101%;
+    right: 20px;
+    width: 200px;
+    min-height: 60px;
+    z-index: 1000;
+    background-color: rgb(88, 16, 31);
+    display: flex;
+    flex-direction: column;
+    transform-origin: top center;
+    transform: scaleY(0);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    animation: showdd 500ms ease forwards;
+}
+
+.dropdownItem {
+    font-size: 18px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    padding-block: 10px;
+    color: white;
+    cursor: pointer;
+    transition: 200ms ease background-color;
+}
+
+.dropdownItem:hover {
+    background-color: rgb(119, 38, 54);
+}
+
+.closeDropdown {
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgb(73, 5, 19);
+    cursor: pointer;
+    color: rgb(220, 125, 144);
+    transition: 250ms ease transform !important;
+}
+
+.closeDropdown:active {
+    transform: scale(.6);
 }
 
 .hidden {
     display: none !important;
+}
+
+@keyframes showdd {
+    100% {
+        transform: scaleY(1);
+    }
 }
 
 @media (max-width: 768px) {

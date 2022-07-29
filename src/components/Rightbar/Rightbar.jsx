@@ -1,9 +1,45 @@
-import React, { useState } from "react";
+import { Add, Remove } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { followUserAction } from "../../actions/userAction";
+import {
+  followUserApi,
+  getFollowings,
+  getFollowingUser,
+  unfollowUserApi,
+} from "../../api";
 import Online from "../Online/Online";
+import Following from "./Followings/Following";
 import "./Rightbar.css";
 
-function Rightbar({ profile }) {
+function Rightbar({ user }) {
   const [bar, setBar] = useState("");
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const currentUser = useSelector((state) => state.user.user);
+  const followings = useSelector((state) => state.user.followings);
+  const [friends, setFriends] = useState([]);
+
+  async function getFollowingUserOnline() {
+    const { data } = await getFollowingUser(currentUser?._id);
+    setFollowingUsers(data);
+  }
+
+  async function getFollowingsUser() {
+    if (user?.followings?.length > 0) {
+      const { data } = await getFollowings(user?._id);
+      setFriends(data);
+
+      return data;
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      getFollowingsUser();
+    } else {
+      getFollowingUserOnline();
+    }
+  }, [user, followings]);
 
   const HomeRightbar = () => {
     return (
@@ -18,9 +54,9 @@ function Rightbar({ profile }) {
         <img src="/group.webp" alt="" className="rightbarAd" />
         <h4 className="rightbarTitle">Online friends</h4>
         <ul className="rightbarFriendList">
-          {/* {Users.map((user , i) => (
-              <Online user={user} key={i} />
-            ))} */}
+          {followingUsers.map((user, i) => (
+            <Online user={user} key={i} />
+          ))}
         </ul>
       </>
     );
@@ -33,47 +69,28 @@ function Rightbar({ profile }) {
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">City:</span>
-            <span className="rightbarInfoValue">New York</span>
+            <span className="rightbarInfoValue">{user?.city}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">From:</span>
-            <span className="rightbarInfoValue">Paris</span>
+            <span className="rightbarInfoValue">{user?.from}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Relationship:</span>
-            <span className="rightbarInfoValue">Single</span>
+            <span className="rightbarInfoValue">
+              {user?.relationship === "1"
+                ? "Single"
+                : user?.relationship === "2"
+                ? "Married"
+                : "-"}
+            </span>
           </div>
         </div>
         <h4 className="rightbarTitle">User Friends</h4>
         <div className="rightbarFollowings">
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="/user1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingUsername">John Doe</span>
-          </div>
+          {friends.map((friend) => (
+            <Following user={friend} key={friend?._id} />
+          ))}
         </div>
       </>
     );
@@ -107,7 +124,13 @@ function Rightbar({ profile }) {
           Close
         </button>
         <div className="rightbarWrapper">
-          {profile ? <ProfileRightbar /> : <HomeRightbar />}
+          {user ? (
+            <>
+              <ProfileRightbar />
+            </>
+          ) : (
+            <HomeRightbar />
+          )}
         </div>
       </div>
     </>

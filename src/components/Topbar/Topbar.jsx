@@ -5,19 +5,31 @@ import {
   ArrowLeft,
   ArrowLeftOutlined,
   Chat,
+  Close,
+  Logout,
   Notifications,
   Person,
   Search,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logOutUser } from "../../actions/userAction";
 
 function Topbar() {
   const [topRight, setTopRight] = useState(false);
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+  const [dropDown, setDropDown] = useState(false);
+  const dispatch = useDispatch();
+
+  const logOut = () => {
+    dispatch(logOutUser());
+  };
+
   return (
     <div className="topbar-container">
       <div className="topbar-left">
-        <span className="logo" onClick={() => navigate("/")}>
+        <span className="logo" onClick={() => navigate("/home")}>
           Star Media
         </span>
       </div>
@@ -37,7 +49,7 @@ function Topbar() {
           onClick={() => setTopRight(!topRight)}
         />
         <div className="topbar-links">
-          <span className="topbar-link" onClick={() => navigate("/")}>
+          <span className="topbar-link" onClick={() => navigate("/home")}>
             Home
           </span>
           <span className="topbar-link">Timeline</span>
@@ -56,9 +68,41 @@ function Topbar() {
             <span className="topbar-icon-badge">1</span>
           </div>
         </div>
-        <Link to={"/profile"}>
-          <img src="/logo.png" alt="" className="topbar-img" />
-        </Link>
+        <div className="topbarDropdown">
+          <img
+            src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
+            alt=""
+            className="topbar-img"
+            onMouseOver={() => setDropDown(true)}
+          />
+          {dropDown && (
+            <ul className="dropdownList">
+              <Close
+                className="closeDropdown"
+                onTransitionEnd={() => setDropDown(false)}
+              />
+              <li className="dropdownItem" onClick={() => setDropDown(false)}>
+                <Link
+                  to={`/profile/${user?._id}`}
+                  style={{
+                    color: "white",
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <Person />
+                  Profile
+                </Link>
+              </li>
+              <li className="dropdownItem" onClick={logOut}>
+                <Logout />
+                Logout
+              </li>
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

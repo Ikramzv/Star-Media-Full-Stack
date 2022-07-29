@@ -20,11 +20,50 @@
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+    transition: 200ms ease transform;
+}
+
+.postImg:active {
+    transform: scale(0.6);
 }
 
 .topLeft {
     display: flex;
     align-items: center;
+}
+
+.topRight {
+    position: relative;
+    
+}
+
+.postTopRightSetting {
+    cursor: pointer;
+}
+
+.postDeleteBtn {
+    position: absolute;
+    left: -50px;
+    top: 110%;
+    transform: scale(1);
+    transition: 300ms ease all;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    color: crimson;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.136);
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+.postDeleteBtn:hover {
+    background-color: rgba(0, 0, 0, 0.401);
+}
+
+.postDeleteBtn > svg {
+    font-size: 16px !important;
 }
 
 .postUsername {

@@ -1,6 +1,6 @@
 .share {
     width: 100%;
-    height: 170px;
+    min-height: 170px;
     border-radius: 10px;
     box-shadow: 4px 4px 5px 2px rgba(0,0,0,0.5);
 }
@@ -23,12 +23,15 @@
 }
 
 .shareInput {
+    font-family: inherit !important;
     border: none;
     outline: none;
     padding: 10px;
     width: 100%;
-    border-radius: 20px;
+    height: 80px;
+    border-radius: 10px;
     transition: 500ms ease all;
+    resize: none;
 }
 
 .shareInput:focus {
@@ -42,6 +45,7 @@
 .shareBottom {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
 .shareOptions {
@@ -70,6 +74,7 @@
 
 .shareOptionText {
     font-size: 14px;
+    cursor: pointer;
 }
 
 .shareBtn {
@@ -82,7 +87,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: 500ms ease background-color , 300ms linear transform;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 .shareBtn:hover {
@@ -91,6 +96,32 @@
 
 .shareBtn:active {
     transform: scale(0.7);
+}
+
+.shareImage {
+    width: 100%;
+    height: 80px;
+    position: relative;
+}
+
+.shareImage > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.postImageDelete {
+    position: absolute;
+    color: crimson !important;
+    font-size: 25px !important;
+    cursor: pointer;
+    transition: 300ms ease transform !important;
+    right: 20px;
+    bottom: 20px;
+}
+
+.postImageDelete:active {
+    transform: scale(0.6);
 }
 
 @media (max-width: 768px) {
