@@ -15,7 +15,7 @@ function Home() {
   
   
   useEffect(() => {
-    socket.current = io('localhost:5000' , {
+    socket.current = io('https://starmedia.herokuapp.com' , {
       transports: ['websocket']
     })
   } , [])

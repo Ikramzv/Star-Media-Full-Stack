@@ -27,7 +27,7 @@ function Mesenger() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000", {
+    socket.current = io("https://starmedia.herokuapp.com", {
       transports: ["websocket"],
     });
     socket.current.on("connect_error", (err) => {
