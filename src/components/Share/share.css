@@ -126,7 +126,7 @@
 
 @media (max-width: 768px) {
     .share {
-        height: 200px;
+        max-height: 400px;
     }
 
     .shareOption {

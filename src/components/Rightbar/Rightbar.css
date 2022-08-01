@@ -50,40 +50,6 @@
     overflow-y: auto;
 }
 
-.rightbarFriend {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.rightbarImgContainer {
-    margin-right: 10px;
-    position: relative;
-}
-
-.rightbarImgContainer > img {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.rightbarImgContainer > span {
-    position: absolute;
-    top: -1px;
-    right: -1px;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background-color: rgb(4, 87, 4);
-    border: 2px solid white;
-}
-
-.rightbarUsername {
-    font-size: 16px;
-    font-weight: 500;
-}
-
 .hidden {
     display: none;
 }
@@ -170,6 +136,7 @@
         align-items: center;
         justify-content: center;
         background-color: rgb(95, 135, 95);
+        cursor: pointer;
     }
 
     .openRightHamburger .bar{

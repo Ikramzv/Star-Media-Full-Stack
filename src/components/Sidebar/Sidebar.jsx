@@ -15,16 +15,23 @@ import CloseFriend from "../CloseFriends/CloseFriend";
 import Conversation from "../Conversations/Conversation";
 import { getFollowings } from "../../api";
 import { useSelector } from "react-redux";
+import SearchedFriends from "./SearchedFriends";
 
-function Sidebar({ messenger }) {
+function Sidebar({ messenger, setCurrentChat, currentChat }) {
   const [bar, setBar] = useState("");
   const { user } = useSelector((state) => state.user);
   const [followings, setFollowings] = useState([]);
   const [value, setValue] = useState("");
   const [searchedFriend, setSearchFriend] = useState([]);
+  const { conversation } = useSelector((state) => state.conversation);
+  const [display, setDisplay] = useState(true);
+  const [conversations, setConversations] = useState([]);
 
   const handleChange = (e) => {
     // Take a value from input and create list based on friends username
+    if (value.length === 0) {
+      setSearchFriend([]);
+    }
     setValue(e.target.value);
     const searchTerm = e.target.value.toUpperCase();
     const searched = followings.filter(
@@ -36,15 +43,32 @@ function Sidebar({ messenger }) {
     setSearchFriend(searched);
   };
 
-  useEffect(() => {}, [searchedFriend, value]);
+  useEffect(() => {
+    if (user) {
+      async function Followings() {
+        const { data } = await getFollowings(user?._id);
+        setFollowings(data);
+      }
+      Followings();
+    }
+  }, [user]);
 
   useEffect(() => {
-    async function Followings() {
-      const { data } = await getFollowings(user?._id);
-      setFollowings(data);
+    if (value.length === 0) {
+      setSearchFriend([]);
+      setDisplay(true);
     }
-    Followings();
-  }, [user]);
+  }, [value]);
+
+  useEffect(() => {
+    if (!display) {
+      setValue("");
+    }
+  }, [display]);
+
+  useEffect(() => {
+    setConversations(conversation);
+  }, [conversation]);
 
   return (
     <>
@@ -77,16 +101,38 @@ function Sidebar({ messenger }) {
                 value={value}
                 onChange={handleChange}
               />
-              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                {searchedFriend.length > 0
-                  ? searchedFriend?.map((friend, i) => (
-                      <Conversation key={i} friend={friend} />
-                    ))
-                  : value.length > 0 // if input value length greater than zero and searchFriend array length is 0 in this time nothing is displayed
-                  ? ""
-                  : followings?.map((friend, i) => (
-                      <Conversation key={i} friend={friend} />
+              <ul className="conversationList">
+                {conversations?.map((c, i) => (
+                  <Conversation
+                    key={i}
+                    conversation={c}
+                    setCurrentChat={setCurrentChat}
+                    setBar={setBar}
+                    currentChat={currentChat}
+                  />
+                ))}
+                <div
+                  className={`${
+                    display && searchedFriend.length > 0 && "searchedFriendList"
+                  }`}
+                >
+                  {display && searchedFriend.length > 0 && (
+                    <h4 style={{ margin: "5px 0 0 10px" }}>Searched ...</h4>
+                  )}
+                  {searchedFriend.length > 0 &&
+                    display &&
+                    searchedFriend?.map((friend, i) => (
+                      <SearchedFriends
+                        key={i}
+                        friend={friend}
+                        setDisplay={setDisplay}
+                        setCurrentChat={setCurrentChat}
+                        conversations={conversations}
+                        setConversations={setConversations}
+                        setBar={setBar}
+                      />
                     ))}
+                </div>
               </ul>
             </div>
           ) : (
@@ -144,9 +190,9 @@ function Sidebar({ messenger }) {
               <button className="sidebarButton">Show more</button>
               <hr className="sidebarHr" />
               <ul className="sidebarFriendList">
-                {/* {Users.map((user , i) => (
-                  <CloseFriend user={user} key={i} />
-                ))} */}
+                {followings.map((f, i) => (
+                  <CloseFriend friend={f} key={i} setBar={setBar} />
+                ))}
               </ul>
             </>
           )}

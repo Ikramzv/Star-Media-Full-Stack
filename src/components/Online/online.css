@@ -1,0 +1,44 @@
+.rightbarImg:active {
+    transform: scale(0.7);
+}
+
+
+.rightbarFriend {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.rightbarImgContainer {
+    margin-right: 10px;
+    position: relative;
+}
+
+.rightbarImg {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: 200ms ease transform;
+}
+
+.rightbarImg:active {
+    transform: scale(0.7);
+}
+
+.rightbarImgContainer > span {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: rgb(4, 87, 4);
+    border: 2px solid white;
+}
+
+.rightbarUsername {
+    font-size: 16px;
+    font-weight: 500;
+}

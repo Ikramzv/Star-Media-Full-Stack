@@ -2,15 +2,37 @@
     height: calc(100vh - 50px);
     width: 100vw;
     display: flex;
-    gap: 10px;
+    gap: 20px;
 }
 
 .chatMenu {
     flex: 3;
 }
 .chatBox {
-    flex: 4;
+    flex: 5;
+    position: relative;
+    margin-inline: 10px;
 }
+
+.chatBoxTop {
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-inline: 10px;
+}
+
+.chatBoxBottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+    background-color: white;
+}
+
 .chatOnline {
     flex: 3;
 }
@@ -23,6 +45,7 @@
     outline: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.412);
     transition: 300ms ease background-color;
+    margin-bottom: 10px;
 }
 
 .chatFriendInput:focus {
@@ -30,30 +53,76 @@
     border-color: #7f77f269;
 }
 
-.chatList {
-    padding: 10px;
-    transition: 300ms ease background-color;
+.chatMessageTextarea {
+    resize: none;
+    font-family: inherit;   
+    height: 90px !important;
+    flex: 1;
+    padding: 12px 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    box-shadow: 0 2px 2px -1px black;
+    transition: 200ms ease box-shadow;
+}
+
+.chatMessageTextarea::-webkit-scrollbar {
+    display: none;
+}
+
+.chatMessageTextarea:focus {
+    box-shadow: 0 2px 2px 0 black;
+}
+
+.chatSubmitButton {
     cursor: pointer;
-    border-radius: 4px;
+    background-color: hsl(151, 74%, 45%);
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 10px;
+    padding: 12px 10px;
+    transition: 200ms ease background-color;
 }
 
-.chatList:hover {
-    background-color: rgba(0, 0, 0, 0.185);
+.chatSubmitButton:hover {
+    background-color: hsl(151, 74%, 35%);
 }
 
-.chatList.active {
-    background-color: rgba(0, 0, 0, 0.185);
+.chatSubmitButton:active {
+    background-color: hsl(151, 74%, 27%);
 }
 
-.chatListItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.noConversationContainer {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    width: 100%;
 }
 
-.chatListItemImg {
-    width: 50px;
-    height: 50px;
+.noConversationContainer > span {
+    font-weight: bold;
+    font-size: 18px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    object-fit: cover;
+    border: 1px dotted black;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .chatOnline , .chatMenu {
+        flex: 0;
+        overflow: hidden;
+    }
+
+    .chatBoxTop::-webkit-scrollbar {
+        display: none;
+    }
+
+    .chatFriendInput {
+        margin-top: 30px;
+    }
 }

@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./topbar.css";
 import {
   ArrowBack,
-  ArrowLeft,
-  ArrowLeftOutlined,
   Chat,
   Close,
   Logout,
@@ -14,17 +12,44 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logOutUser } from "../../actions/userAction";
+import { getAllMessages, getUserWithQuery } from "../../api";
+import { SET_UNREAD_MESSAGES } from "../../actions/actionTypes";
 
 function Topbar() {
   const [topRight, setTopRight] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
   const [dropDown, setDropDown] = useState(false);
+  const unreadMessages = useSelector((state) => state.messages.unreadMessages);
   const dispatch = useDispatch();
+  const [value, setValue] = useState("");
 
   const logOut = () => {
     dispatch(logOutUser());
   };
+
+  const handleKeyUp = async (e) => {
+    if (e.keyCode === 13) {
+      setValue("");
+      const { data } = await getUserWithQuery(value);
+      if (data) return navigate(`/profile/${data?._id}`);
+      alert(`No user was found with the given username : ${value}`);
+    }
+  };
+
+  useEffect(() => {
+    async function getMessages() {
+      const { data } = await getAllMessages();
+      dispatch({
+        type: SET_UNREAD_MESSAGES,
+        payload: data.filter(
+          (msg) => msg.read === false && msg.sender !== user?._id
+        ),
+      });
+    }
+
+    getMessages();
+  }, []);
 
   return (
     <div className="topbar-container">
@@ -40,6 +65,9 @@ function Topbar() {
             type={"text"}
             placeholder="Search for friends, posts or any video"
             className="searchInput"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyUp={handleKeyUp}
           />
         </div>
       </div>
@@ -57,18 +85,24 @@ function Topbar() {
         <div className="topbar-icons">
           <div className="topbar-icon-item">
             <Person />
-            <span className="topbar-icon-badge">1</span>
           </div>
           <div
             className="topbar-icon-item"
             onClick={() => navigate("/messenger")}
           >
             <Chat />
-            <span className="topbar-icon-badge">2</span>
+            <span
+              className={`${
+                unreadMessages.length > 0
+                  ? "topbar-icon-badge"
+                  : "nonNotification"
+              }`}
+            >
+              {unreadMessages.length}
+            </span>
           </div>
           <div className="topbar-icon-item">
             <Notifications />
-            <span className="topbar-icon-badge">1</span>
           </div>
         </div>
         <div className="topbarDropdown">

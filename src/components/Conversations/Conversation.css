@@ -1,0 +1,48 @@
+.chatList {
+    padding: 10px;
+    transition: 300ms ease background-color;
+    cursor: pointer;
+    border-radius: 4px;
+    position: relative;
+}
+
+.chatList:hover {
+    background-color: rgba(0, 0, 0, 0.185);
+}
+
+.chatList.active {
+    background-color: rgba(0, 0, 0, 0.185);
+}
+
+.chatListItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chatListItemImg {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chatListItemNotificationBadge {
+    position: absolute;
+    left: 10;
+    top: 7px;
+    width: 18px;
+    height: 18px;
+    background-color: crimson;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    border: 2px solid white;
+}
+
+.nonNotification {
+    display: none;
+}

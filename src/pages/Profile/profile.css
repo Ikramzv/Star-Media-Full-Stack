@@ -37,12 +37,19 @@
     justify-content: center;
     gap: 10px;
 }
+
 .profileInfo > h4{
     font-size: 25px;
     margin-right: 20px;
 }
 
-.profileInfo > h5{
+.profileInfoStatistics {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profileInfoStatistics > h5{
     background-color: #bbb;
     border-radius: 10px;
     padding: 5px 8px;
@@ -115,4 +122,11 @@
 .rightbarFollowingUsername {
     color: rgb(64, 52, 139);
     font-weight: 400;
+}
+
+
+@media (max-width: 768px) {
+    .profileInfo {
+        flex-direction: column;
+    }
 }

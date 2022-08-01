@@ -8,43 +8,41 @@ import { useEffect } from "react";
 import { followUserApi, getUser, unfollowUserApi } from "../../api";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useMemo } from "react";
 import { Add, Remove } from "@mui/icons-material";
 
 function Profile() {
   const [user, setUser] = useState({});
   const { id } = useParams();
-  const followings = useSelector((state) => state.user.followings);
-  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.user);
-  const [followed, setFollowed] = useState(
-    currentUser?.followings.includes(user?._id)
-  );
+  const [followed, setFollowed] = useState(Boolean);
+  const [userFollowers, setUserFollowers] = useState([]);
 
   async function getUserForProfile() {
     const { data } = await getUser(id);
+    setUserFollowers(data?.followers);
     setUser(data);
   }
 
   const followUser = async () => {
-    if (!followings.some((id) => id === user?._id)) {
-      dispatch({ type: "FOLLOW", payload: [...followings, user?._id] });
+    if (!userFollowers.some((id) => id === currentUser?._id)) {
+      setUserFollowers([...userFollowers, currentUser?._id]);
+      setFollowed(true);
       await followUserApi(user?._id);
     } else {
-      dispatch({ type: "UNFOLLOW", payload: user?._id });
+      setUserFollowers(userFollowers.filter((id) => id !== currentUser?._id));
+      setFollowed(false);
       await unfollowUserApi(user?._id);
     }
   };
 
-  const memoize = useMemo(() => {
+  useEffect(() => {
     getUserForProfile();
-    setFollowed(followings.includes(user?._id));
-  }, [id, followings, followed]);
+    setFollowed(userFollowers.includes(currentUser?._id));
+  }, [id]);
 
   useEffect(() => {
-    setFollowed(currentUser?.followings.includes(user?._id));
-    return memoize;
-  }, []);
+    setFollowed(userFollowers.includes(currentUser?._id));
+  }, [user]);
 
   return (
     <>
@@ -68,12 +66,14 @@ function Profile() {
             </div>
             <div className="profileInfo">
               <h4 className="profileInfoName">{user?.username}</h4>
-              <h5 className="profileInfoFollowers">
-                {user?.followers?.length} Followers
-              </h5>
-              <h5 className="profileInfoFollowings">
-                {user?.followings?.length} Followings
-              </h5>
+              <div className="profileInfoStatistics">
+                <h5 className="profileInfoFollowers">
+                  {userFollowers.length} Followers
+                </h5>
+                <h5 className="profileInfoFollowings">
+                  {user?.followings?.length} Followings
+                </h5>
+              </div>
               {user?._id !== currentUser?._id && (
                 <button
                   className="rightbarFollowBtn"

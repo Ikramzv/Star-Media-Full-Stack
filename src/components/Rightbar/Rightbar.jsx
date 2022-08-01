@@ -1,28 +1,13 @@
-import { Add, Remove } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { followUserAction } from "../../actions/userAction";
-import {
-  followUserApi,
-  getFollowings,
-  getFollowingUser,
-  unfollowUserApi,
-} from "../../api";
+import { getFollowings } from "../../api";
+import ChatOnline from "../ChatOnline/ChatOnline";
 import Online from "../Online/Online";
 import Following from "./Followings/Following";
 import "./Rightbar.css";
 
-function Rightbar({ user }) {
+function Rightbar({ user, messenger, onlineFriends }) {
   const [bar, setBar] = useState("");
-  const [followingUsers, setFollowingUsers] = useState([]);
-  const currentUser = useSelector((state) => state.user.user);
-  const followings = useSelector((state) => state.user.followings);
   const [friends, setFriends] = useState([]);
-
-  async function getFollowingUserOnline() {
-    const { data } = await getFollowingUser(currentUser?._id);
-    setFollowingUsers(data);
-  }
 
   async function getFollowingsUser() {
     if (user?.followings?.length > 0) {
@@ -36,10 +21,8 @@ function Rightbar({ user }) {
   useEffect(() => {
     if (user) {
       getFollowingsUser();
-    } else {
-      getFollowingUserOnline();
     }
-  }, [user, followings]);
+  }, [user]);
 
   const HomeRightbar = () => {
     return (
@@ -54,8 +37,8 @@ function Rightbar({ user }) {
         <img src="/group.webp" alt="" className="rightbarAd" />
         <h4 className="rightbarTitle">Online friends</h4>
         <ul className="rightbarFriendList">
-          {followingUsers.map((user, i) => (
-            <Online user={user} key={i} />
+          {onlineFriends.map((online, i) => (
+            <Online onlineFriends={online} key={i} />
           ))}
         </ul>
       </>
@@ -96,6 +79,10 @@ function Rightbar({ user }) {
     );
   };
 
+  const MessengerRightbar = () => {
+    return onlineFriends.map((f, i) => <ChatOnline online={f} key={i} />);
+  };
+
   return (
     <>
       <div
@@ -124,12 +111,16 @@ function Rightbar({ user }) {
           Close
         </button>
         <div className="rightbarWrapper">
-          {user ? (
-            <>
-              <ProfileRightbar />
-            </>
+          {!messenger ? (
+            user ? (
+              <>
+                <ProfileRightbar />
+              </>
+            ) : (
+              <HomeRightbar />
+            )
           ) : (
-            <HomeRightbar />
+            <MessengerRightbar />
           )}
         </div>
       </div>

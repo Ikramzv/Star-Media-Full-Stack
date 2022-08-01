@@ -76,6 +76,14 @@
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 300ms ease background-color;
+    padding: 8px 10px;
+}
+
+.sidebarFriend:hover {
+    background-color: rgba(0, 0, 0, 0.184);
 }
 
 .sidebarFriendImg {
@@ -90,6 +98,63 @@
     display: none;
 }
 
+.conversationList {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.searchedFriendList {
+    background-color: white;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 10000;
+    animation: list 1s ease;
+    box-shadow: 0 3px 5px 0 black;
+    border-radius: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.searchedFriendList::-webkit-scrollbar {
+    display: none;
+}
+
+.searchedListItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-block: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 200ms ease;
+    cursor: pointer;
+}
+
+.searchedListItem:hover {
+    background-color: rgba(0, 0, 0, 0.184);
+}
+
+.searchedListItemImg {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+@keyframes list {
+    0% {
+        box-shadow: none;
+        max-height: 0px;
+    }
+    100% {
+        max-height: 600px;
+        box-shadow: 0 3px 5px 0 black;
+    }
+}
 
 @media (max-width: 768px) {
     .sidebar {
@@ -132,6 +197,7 @@
         outline: none;
         transition: 250ms ease transform;
         z-index: 10000;
+        cursor: pointer;
     }
 
     .openSidebar {
@@ -156,6 +222,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        cursor: pointer;
     }
 
     .hamburger .bar{
