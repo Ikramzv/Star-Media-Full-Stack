@@ -1,10 +1,10 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, setConversationMessageRead, getAllMessages } from "../../api";
-import "./Conversation.css";
-import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { SET_UNREAD_MESSAGES } from "../../actions/actionTypes";
+import { getAllMessages, getUser, setConversationMessageRead } from "../../api";
+import "./Conversation.css";
 
 function Conversation({ conversation, setCurrentChat, setBar, currentChat }) {
   const [active, setActive] = useState(false);
@@ -119,4 +119,4 @@ function Conversation({ conversation, setCurrentChat, setBar, currentChat }) {
   );
 }
 
-export default Conversation;
+export default React.memo(Conversation);
