@@ -6,6 +6,11 @@
     box-sizing: border-box;
 }
 
+::selection {
+    background-color: rgb(97, 8, 26);
+    color: white;
+}
+
 body {
     /* font-family: 'Edu VIC WA NT Beginner', cursive; */
     font-family: 'Roboto', sans-serif;
