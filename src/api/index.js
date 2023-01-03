@@ -34,6 +34,10 @@ export const unfollowUserApi = async (id) =>
 // POSTS
 
 export const getTimeline = async () => await API.get(`/posts/timeline/all`);
+export const getAdditionalPostsToShowApi = async (since) =>
+  await API.get(
+    `/posts/timeline/additional_to_show${since ? `?since=${since}` : ""}`
+  );
 
 export const likePost = async (id) => await API.put(`/posts/${id}/like`);
 export const createPost = async (payload) => await API.post("/posts", payload);
