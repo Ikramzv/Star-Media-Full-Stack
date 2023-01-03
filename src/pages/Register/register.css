@@ -66,12 +66,8 @@ legend {
     align-items: center;
     margin-bottom: 20px;
     user-select: none;
-    filter: invert(100%) blur(2px);
+    filter: invert(100%) blur(0.1px);
     transition: 500ms ease filter;
-}
-
-legend:hover {
-    filter: invert(100%) blur(0px);
 }
 
 .registerFormInputs {
