@@ -1,14 +1,13 @@
-const { Router } = require( "express")
-const User = require( "../models/User.js")
-const bcrypt = require( "bcrypt")
-const jwt = require( "jsonwebtoken")
+const { Router } = require("express");
+const User = require("../models/User.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const router = Router();
 
 // Register
 
 router.post("/register", async (req, res) => {
-  
   const user = new User(req.body);
 
   try {
@@ -36,8 +35,7 @@ router.post("/login", async (req, res) => {
       return res.status(403).send("No user was found with given email");
     // Check encoded password bcrypt compare function
     bcrypt.compare(req.body.password, user.password, (err, result) => {
-      if (!result)
-        return res.status(403).send("No user was found with given password");
+      if (!result) return res.status(403).send("Invalid password");
       const { password, ...others } = user._doc;
       const payload = {
         username: user.username,
