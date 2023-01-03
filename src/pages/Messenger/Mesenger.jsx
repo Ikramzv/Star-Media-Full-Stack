@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from "react";
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import io from "socket.io-client";
 import { getConvs } from "../../actions/conversationActions";
 import { getMessages, sendMessageAction } from "../../actions/messagesAction";
+import { getSingleConversation } from "../../api";
 import Message from "../../components/Message/Message";
 import Rightbar from "../../components/Rightbar/Rightbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import io from "socket.io-client";
+import SERVER_URL from "../../constants";
 import "./mesenger.css";
-import { getSingleConversation } from "../../api";
 
 function Mesenger() {
   const { user } = useSelector((state) => state.user);
@@ -27,7 +27,7 @@ function Mesenger() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    socket.current = io("https://starmedia.herokuapp.com", {
+    socket.current = io(SERVER_URL, {
       transports: ["websocket"],
     });
     socket.current.on("connect_error", (err) => {

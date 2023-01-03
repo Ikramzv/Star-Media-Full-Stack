@@ -1,37 +1,35 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./home.css";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import Rightbar from "../../components/Rightbar/Rightbar";
-import Feed from "../../components/Feed/Feed";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import io from 'socket.io-client'
+import io from "socket.io-client";
+import Feed from "../../components/Feed/Feed";
+import Rightbar from "../../components/Rightbar/Rightbar";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import SERVER_URL from "../../constants";
+import "./home.css";
 
 function Home() {
-  const { user } = useSelector(state => state.user)
-  const navigate = useNavigate()
-  const socket = useRef()
-  const [onlineFriends , setOnlineFriends] = useState([])
-  
-  
-  useEffect(() => {
-    socket.current = io('https://starmedia.herokuapp.com' , {
-      transports: ['websocket']
-    })
-  } , [])
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const socket = useRef();
+  const [onlineFriends, setOnlineFriends] = useState([]);
 
-  
   useEffect(() => {
-    if(!user){
-      navigate('/login')
-    } else if(socket && user) {
-      socket.current.emit('sendUser' , user?._id)
-      socket.current.on('getUsers' , (users) => {
-        setOnlineFriends(users.filter(u => u.userId !== user?._id))
-      })
+    socket.current = io(SERVER_URL, {
+      transports: ["websocket"],
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    } else if (socket && user) {
+      socket.current.emit("sendUser", user?._id);
+      socket.current.on("getUsers", (users) => {
+        setOnlineFriends(users.filter((u) => u.userId !== user?._id));
+      });
     }
-  } ,[user])
-
+  }, [user]);
 
   return (
     <div>
