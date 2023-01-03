@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-import "./share.css";
 import {
   Delete,
   EmojiEmotions,
@@ -7,10 +5,11 @@ import {
   PermMedia,
   Room,
 } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
-import { createUserPost } from "../../actions/postAction";
 import { CircularProgress } from "@mui/material";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createUserPost } from "../../actions/postAction";
+import "./share.css";
 
 function Share() {
   const user = useSelector((state) => state.user.user);
@@ -29,7 +28,7 @@ function Share() {
 
   const createPost = (e) => {
     e.preventDefault();
-    if (desc.length > 5) {
+    if (desc.length > 0) {
       dispatch(
         createUserPost({
           desc,
@@ -39,7 +38,7 @@ function Share() {
       setImage("");
       setDesc("");
     } else {
-      return alert("Description must be 5 letter at least");
+      return alert("Description must be 1 character at least");
     }
   };
 

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import "./login.css";
-import { loginUser } from "../../actions/userAction";
 import { CircularProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../actions/userAction";
+import "./login.css";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -24,11 +24,14 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData) {
-      dispatch(loginUser(formData, navigate));
-      setFormData({
-        email: "",
-        password: "",
-      });
+      let isError = true;
+      dispatch(loginUser(formData, navigate, isError));
+      if (!isError) {
+        setFormData({
+          email: "",
+          password: "",
+        });
+      }
     }
   };
 
