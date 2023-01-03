@@ -25,11 +25,11 @@ app.use(morgan("common"));
 
 // ROUTES
 
-app.use("/api/users", userRouter);
-app.use("/api/auth", authRouter);
-app.use("/api/posts", postRouter);
-app.use("/api/conversations", ConversationRouter);
-app.use("/api/messages", MessageRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
+app.use("/posts", postRouter);
+app.use("/conversations", ConversationRouter);
+app.use("/messages", MessageRouter);
 
 // ===
 
