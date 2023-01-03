@@ -4,59 +4,56 @@ import {
   FavoriteBorder,
   MoreVert,
 } from "@mui/icons-material";
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deletePostAction,
-  getSingleUser,
-  like,
-} from "../../actions/postAction";
-import moment from "moment";
-import "./Post.css";
 import { useNavigate } from "react-router-dom";
+import { deletePostAction, like } from "../../actions/postAction";
+import { getUser } from "../../api";
+import "./Post.css";
+
+const Like = ({ post, user }) => {
+  const dispatch = useDispatch();
+  const likePost = () => {
+    dispatch(like(post._id, user._id));
+  };
+  return (
+    <>
+      {post.likes.some((id) => id === user?._id) ? (
+        <Favorite className="likeBtn" onClick={likePost} color="error" />
+      ) : (
+        <FavoriteBorder className="likeBtn" onClick={likePost} />
+      )}
+      <span className="likeCounter">{post.likes.length}</span>
+    </>
+  );
+};
 
 function Post({ post }) {
-  const [likes, setLikes] = useState([]);
+  const [postUser, setPostUser] = useState({});
+  const [disabled, setDisabled] = useState(false);
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-  const postUsers = useSelector((state) => state.posts.postUsers);
-  const [postUser, setPostUser] = useState({});
   const navigate = useNavigate();
-  const [disabled, setDisabled] = useState(false);
-
-  const likePost = () => {
-    if (!likes.find((id) => id === user?._id)) {
-      setLikes([...likes, user?._id]);
-    } else {
-      setLikes(likes.filter((id) => id !== user?._id));
-    }
-
-    dispatch(like(post._id));
-  };
 
   const deletePost = async () => {
     setDisabled(true);
-    dispatch(deletePostAction(post?._id, setDisabled));
+    const ask = prompt(
+      "Are you sure to delete the post ? Then write 'yes' .. "
+    );
+    if (ask !== "yes") {
+      setDisabled(false);
+      return;
+    } else {
+      dispatch(deletePostAction(post?._id, setDisabled));
+    }
   };
 
   useEffect(() => {
-    dispatch(getSingleUser(post.userId));
-    setPostUser(postUsers.find((user) => user?._id === post?.userId));
-    setLikes(post.likes);
-  }, [post]);
-
-  const Like = () => {
-    return (
-      <>
-        {likes.some((id) => id === user?._id) ? (
-          <Favorite className="likeBtn" onClick={likePost} color="error" />
-        ) : (
-          <FavoriteBorder className="likeBtn" onClick={likePost} />
-        )}
-        <span className="likeCounter">{likes.length}</span>
-      </>
-    );
-  };
+    getUser(post.userId).then(({ data }) => {
+      setPostUser(data);
+    });
+  }, []);
 
   return (
     <div className="post">
@@ -98,7 +95,7 @@ function Post({ post }) {
         </figure>
         <div className="postBottom">
           <div className="postBottomLeft">
-            <Like />
+            <Like post={post} user={user} />
           </div>
           <div className="postBottomRight">
             <span className="postCommentText">9 comments</span>
