@@ -69,4 +69,4 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = model("user", userSchema, "users");
+module.exports = model("User", userSchema, "users");
