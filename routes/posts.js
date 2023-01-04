@@ -3,6 +3,7 @@ const Post = require("../models/Post");
 const verify = require("./verify");
 const mongoose = require("mongoose");
 const User = require("../models/User");
+const { post_aggregate } = require("../utils");
 
 const router = Router();
 
@@ -26,7 +27,7 @@ router.post("/", verify, async (req, res) => {
 router.put("/:id", verify, async (req, res) => {
   const { id } = req.params;
   const post = await Post.findById(id);
-  if (post.userId === req.user.id) {
+  if (post.userId.toString() === req.user.id) {
     try {
       const updatedPost = await Post.findByIdAndUpdate(
         id,
@@ -49,7 +50,7 @@ router.put("/:id", verify, async (req, res) => {
 router.delete("/:id", verify, async (req, res) => {
   const { id } = req.params;
   const post = await Post.findById(id);
-  if (post.userId === req.user.id) {
+  if (post.userId.toString() === req.user.id) {
     try {
       await post.deleteOne();
       res.status(200).send("Post has been deleted");
@@ -65,35 +66,33 @@ router.delete("/:id", verify, async (req, res) => {
 
 router.put("/:id/like", verify, async (req, res) => {
   const { id } = req.params;
-  const post = await Post.findById(id);
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(403).send("No post was found with the given id");
   try {
-    if (!post?.likes?.includes(req.user.id)) {
-      // If user already haven't liked this posts this will be like
-      const increaseLike = await Post.findByIdAndUpdate(
-        id,
+    const post = await Post.updateOne(
+      { _id: id },
+      [
         {
-          $push: {
-            likes: req.user.id,
+          $set: {
+            likes: {
+              $cond: {
+                if: {
+                  $in: [req.user.id, "$likes"],
+                },
+                then: {
+                  $setDifference: ["$likes", [req.user.id]],
+                },
+                else: {
+                  $concatArrays: ["$likes", [req.user.id]],
+                },
+              },
+            },
           },
         },
-        { new: true }
-      );
-      res.status(200).json(increaseLike);
-    } else {
-      // If user already have liked this posts this will be dislike
-      const decreaseLike = await Post.findByIdAndUpdate(
-        id,
-        {
-          $pull: {
-            likes: req.user.id,
-          },
-        },
-        { new: true }
-      );
-      res.status(200).json(decreaseLike);
-    }
+      ],
+      { new: true }
+    );
+    return res.status(200).json(post);
   } catch (err) {
     res.status(403).send(err.message);
   }
@@ -113,21 +112,14 @@ router.get("/:id", async (req, res) => {
 // get timeline posts
 
 router.get("/timeline/all", verify, async (req, res) => {
+  let { since } = req.query;
+  since = since ? new Date(since) : new Date();
   try {
     const currentUser = await User.findById(req.user.id);
-    const userPosts = await Post.find({ userId: currentUser._id });
-    const friendPosts = await Promise.all(
-      currentUser.followings.map((friendId) => {
-        return Post.find({ userId: friendId });
-      })
+    const allPosts = await Post.aggregate(
+      post_aggregate(currentUser, req, since)
     );
-    res
-      .status(200)
-      .json(
-        userPosts
-          .concat(...friendPosts)
-          .sort((a, b) => b.createdAt - a.createdAt)
-      );
+    res.status(200).json(allPosts.sort((a, b) => b.createdAt - a.createdAt));
   } catch (err) {
     res.status(400).send(err.message);
   }
@@ -142,22 +134,9 @@ router.get("/timeline/additional_to_show", verify, async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.findById(userId);
-    const posts = await Post.aggregate([
-      {
-        $match: {
-          userId: {
-            $nin: [req.user.id, ...user.followings],
-          },
-          createdAt: {
-            $lt: since,
-          },
-        },
-      },
-      {
-        $sort: { createdAt: -1 },
-      },
-      { $limit: 5 },
-    ]);
+    const posts = await Post.aggregate(
+      post_aggregate(user, req, since, "additional")
+    );
     return res.status(200).json(posts);
   } catch (error) {
     return res.status(500).send(error.message);
