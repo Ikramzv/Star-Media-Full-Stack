@@ -1,4 +1,4 @@
-const { Router } = require("express");
+const { Router, response } = require("express");
 const Post = require("../models/Post");
 const verify = require("./verify");
 const mongoose = require("mongoose");
@@ -59,6 +59,29 @@ router.delete("/:id", verify, async (req, res) => {
     }
   } else {
     res.status(403).send("You are not allowed for deleting the post");
+  }
+});
+
+// edit post
+
+router.patch("/edit/:id", verify, async (req, res) => {
+  const { id } = req.params;
+  const { desc } = req.body;
+  try {
+    const post = await Post.findOneAndUpdate(
+      { _id: id },
+      [
+        {
+          $set: {
+            desc,
+          },
+        },
+      ],
+      { new: true }
+    );
+    return res.status(200).json(post);
+  } catch (error) {
+    return res.status(200).send(error.message);
   }
 });
 
