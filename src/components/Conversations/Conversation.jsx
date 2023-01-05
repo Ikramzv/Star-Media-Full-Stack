@@ -1,119 +1,48 @@
-import { CircularProgress } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { SET_UNREAD_MESSAGES } from "../../actions/actionTypes";
-import { getAllMessages, getUser, setConversationMessageRead } from "../../api";
+import { useNavigate, useParams } from "react-router-dom";
+import { setUnreadMessagesRead } from "../../actions/messagesAction";
 import "./Conversation.css";
+import InteractiveLi from "./InteractiveLi";
+import UnReadMessages from "./UnReadMessages";
 
-function Conversation({ conversation, setCurrentChat, setBar, currentChat }) {
-  const [active, setActive] = useState(false);
-  const li = useRef();
-  const currentUser = useSelector((state) => state.user.user);
-  const loading = useSelector((state) => state.loading);
-  const [user, setUser] = useState({});
-  const unreadMessages = useSelector((state) => state.messages.unreadMessages);
+function Conversation({ conversation, setBar }) {
+  const { unreadMessages } = useSelector((state) => state.messages);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id: convId } = useParams();
 
   const handleClick = async () => {
-    dispatch({
-      type: SET_UNREAD_MESSAGES,
-      payload: unreadMessages.filter(
-        (msg) => msg.conversationId !== conversation?._id
-      ),
-    });
+    if (unreadMessages.some((msg) => msg.conversationId === convId)) {
+      dispatch(setUnreadMessagesRead(convId));
+    }
     setBar("close");
-    setCurrentChat(conversation);
-    navigate(`/messenger/${conversation?._id}`);
-    await setConversationMessageRead(conversation?._id);
+    if (conversation?._id !== convId) {
+      navigate(`/messenger/${conversation?._id}`);
+    }
   };
 
-  useEffect(() => {
-    const friendId = conversation?.members.find((m) => m !== currentUser?._id);
-    async function getUserApi() {
-      const { data } = await getUser(friendId);
-      setUser(data);
-    }
-
-    async function getUnreadMessageForConversation() {
-      const { data } = await getAllMessages();
-      const message = data.filter(
-        (msg) => msg.read === false && msg.conversationId === currentChat?._id
-      );
-      if (message.length > 0) {
-        dispatch({
-          type: SET_UNREAD_MESSAGES,
-          payload: unreadMessages.filter(
-            (msg) => msg.conversationId !== currentChat?._id
-          ),
-        });
-        return await setConversationMessageRead(currentChat?._id);
-      } else {
-        return dispatch({
-          type: SET_UNREAD_MESSAGES,
-          payload: data.filter(
-            (msg) => msg.read === false && msg.sender !== currentUser?._id
-          ),
-        });
-      }
-    }
-
-    getUnreadMessageForConversation();
-    getUserApi();
-  }, [conversation]);
-
-  useEffect(() => {
-    const filter = Array.from(document.querySelectorAll(".chatList")).filter(
-      (li) => li.classList.contains("active")
-    );
-
-    if (filter.length > 1) {
-      filter
-        .filter((list) => list !== li.current)
-        .forEach((list) => list.classList.remove("active"));
-    }
-  }, [active]);
+  console.log("conv");
 
   return (
     <>
-      {loading && <CircularProgress className="loading" />}
       <div onClick={handleClick}>
-        <li
-          className={`chatList`}
-          ref={li}
-          onClick={() => {
-            li.current.classList.add("active");
-            setActive(!active);
-          }}
-        >
+        <InteractiveLi>
           <div className="chatListItem">
             <img
               src={
-                user?.userProfileImage ? user?.userProfileImage : "/user.webp"
+                conversation?.receiver?.userProfileImage
+                  ? conversation?.receiver?.userProfileImage
+                  : "/user.webp"
               }
               alt="user"
               className="chatListItemImg"
             />
-            <strong>{user?.username}</strong>
+            <strong>{conversation?.receiver?.username}</strong>
             <small style={{ marginLeft: "auto", color: "gray" }}>chat</small>
-            <span
-              className={`${
-                unreadMessages.filter(
-                  (msg) => msg.conversationId === conversation?._id
-                ).length > 0
-                  ? "chatListItemNotificationBadge"
-                  : "nonNotification"
-              }`}
-            >
-              {
-                unreadMessages.filter(
-                  (msg) => msg.conversationId === conversation?._id
-                ).length
-              }
-            </span>
+            <UnReadMessages conversation={conversation} />
           </div>
-        </li>
+        </InteractiveLi>
       </div>
     </>
   );

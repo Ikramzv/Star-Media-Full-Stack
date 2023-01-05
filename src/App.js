@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
@@ -9,7 +10,10 @@ import Profile from "./pages/Profile/Profile";
 import Register from "./pages/Register/Register";
 
 function App() {
-  const user = useSelector((state) => state.user.user);
+  const { user, loading } = useSelector((state) => ({
+    user: state.user.user,
+    loading: state.loading,
+  }));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +23,7 @@ function App() {
   }, [user]);
   return (
     <div style={{ overflowX: "clip" }}>
+      {loading && <CircularProgress color="error" className="loading" />}
       <Routes>
         <Route
           path="/"

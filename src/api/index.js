@@ -57,6 +57,8 @@ export const getSingleConversation = async (conversationId) =>
 export const getMessagesApi = async (convId) =>
   await API.get(`/messages/${convId}`);
 export const getAllMessages = async () => await API.get("/messages");
+export const getAllUnreadMessages = async () =>
+  await API.get("/messages/unread");
 export const sendMessageApi = async (data) => await API.post("/messages", data);
 export const setMessageRead = async (messageId) =>
   await API.patch(`/messages/${messageId}`);

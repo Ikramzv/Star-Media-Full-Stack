@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../../api";
 import "./ChatOnline.css";
 
-function ChatOnline({ online }) {
+function ChatOnline({ online, setBar }) {
   const [friend, setFriend] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
@@ -13,7 +12,7 @@ function ChatOnline({ online }) {
       setFriend(data);
     }
     getOnline();
-  }, [online]);
+  }, []);
   return (
     <div className="chatOnline">
       <div className="chatOnlineFriend">
@@ -24,7 +23,10 @@ function ChatOnline({ online }) {
             }
             alt=""
             className="chatOnlineImg"
-            onClick={() => navigate(`/profile/${online.userId}`)}
+            onClick={() => {
+              setBar("close");
+              navigate(`/profile/${online.userId}`);
+            }}
           />
           <div className="chatOnlineBadge"></div>
         </div>
@@ -34,4 +36,4 @@ function ChatOnline({ online }) {
   );
 }
 
-export default ChatOnline;
+export default React.memo(ChatOnline);

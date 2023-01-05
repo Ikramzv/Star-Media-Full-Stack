@@ -5,7 +5,6 @@ import {
   PermMedia,
   Room,
 } from "@mui/icons-material";
-import { CircularProgress } from "@mui/material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createUserPost } from "../../actions/postAction";
@@ -54,7 +53,6 @@ function Share() {
 
   return (
     <div className="share">
-      {loading && <CircularProgress className="loading" />}
       <div className="shareWrapper">
         <div className="shareTop">
           <img

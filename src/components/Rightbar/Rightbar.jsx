@@ -38,13 +38,13 @@ function Rightbar({ user, messenger, onlineFriends }) {
           {!messenger ? (
             user ? (
               <>
-                <ProfileRightbar profileUser={user} />
+                <ProfileRightbar profileUser={user} setBar={setBar} />
               </>
             ) : (
-              <HomeRightbar onlineFriends={onlineFriends} />
+              <HomeRightbar onlineFriends={onlineFriends} setBar={setBar} />
             )
           ) : (
-            <MessengerRightbar onlineFriends={onlineFriends} />
+            <MessengerRightbar onlineFriends={onlineFriends} setBar={setBar} />
           )}
         </div>
       </div>

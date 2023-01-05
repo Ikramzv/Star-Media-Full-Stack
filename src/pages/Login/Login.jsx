@@ -12,7 +12,10 @@ function Login() {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading } = useSelector((state) => state);
+  const {
+    loading,
+    user: { user },
+  } = useSelector((state) => state);
 
   const handleChange = (e) => {
     setFormData({
@@ -33,7 +36,11 @@ function Login() {
     navigate("/register");
   };
 
-  useEffect(() => {}, [formData]);
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="login">

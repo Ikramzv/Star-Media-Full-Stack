@@ -2,7 +2,7 @@ import { createConversation, getConversation } from "../api";
 import {
   CREATE_CONVERSATION,
   END_LOADING,
-  GET_CONVERSATION,
+  GET_CONVERSATIONS,
   START_LOADING,
 } from "./actionTypes";
 
@@ -11,7 +11,7 @@ export const getConvs = () => async (dispatch) => {
   try {
     const { data } = await getConversation();
     dispatch({
-      type: GET_CONVERSATION,
+      type: GET_CONVERSATIONS,
       payload: data,
     });
   } catch (error) {
@@ -21,8 +21,7 @@ export const getConvs = () => async (dispatch) => {
 };
 
 export const createConversationAction =
-  (receiverId, setCurrentChat, setConversations, conversations) =>
-  async (dispatch) => {
+  (receiverId, navigate) => async (dispatch) => {
     dispatch({ type: START_LOADING });
     try {
       const { data } = await createConversation(receiverId);
@@ -30,14 +29,7 @@ export const createConversationAction =
         type: CREATE_CONVERSATION,
         payload: data,
       });
-      setConversations([
-        ...conversations,
-        {
-          _id: data?._id,
-          members: data?.members,
-        },
-      ]);
-      setCurrentChat(data);
+      navigate(`/messenger/${data?._id}`);
     } catch (error) {
       Promise.reject(error);
     }

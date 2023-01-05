@@ -6,11 +6,10 @@ import "./Sidebar.css";
 import SidebarForMessenger from "./SidebarForMessenger";
 import SidebarList from "./SidebarList";
 
-function Sidebar({ messenger, setCurrentChat, currentChat }) {
+function Sidebar({ messenger, currentChat }) {
   const [bar, setBar] = useState("");
   const { user } = useSelector((state) => state.user);
   const [followings, setFollowings] = useState([]);
-
   useEffect(() => {
     if (user) {
       async function getUserFollowings() {
@@ -19,7 +18,7 @@ function Sidebar({ messenger, setCurrentChat, currentChat }) {
       }
       getUserFollowings();
     }
-  }, [user]);
+  }, [user._id]);
 
   return (
     <>
@@ -48,7 +47,6 @@ function Sidebar({ messenger, setCurrentChat, currentChat }) {
               currentChat={currentChat}
               followings={followings}
               setBar={setBar}
-              setCurrentChat={setCurrentChat}
             />
           ) : (
             <>

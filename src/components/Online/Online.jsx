@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import "./online.css";
-import { getUser } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../../api";
+import "./online.css";
 
-function Online({ onlineFriends }) {
+function Online({ onlineFriends, setBar }) {
   const [user, setUser] = useState();
   const navigate = useNavigate();
   useEffect(() => {
@@ -22,7 +22,10 @@ function Online({ onlineFriends }) {
             src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
             alt=""
             className="rightbarImg"
-            onClick={() => navigate(`/profile/${onlineFriends.userId}`)}
+            onClick={() => {
+              setBar("close");
+              navigate(`/profile/${onlineFriends.userId}`);
+            }}
           />
           <span className="rightbarOnline"></span>
         </div>
@@ -32,4 +35,4 @@ function Online({ onlineFriends }) {
   );
 }
 
-export default Online;
+export default React.memo(Online);

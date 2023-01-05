@@ -1,7 +1,7 @@
 import React from "react";
 import Online from "../Online/Online";
 
-const HomeRightbar = ({ onlineFriends }) => {
+const HomeRightbar = ({ onlineFriends, setBar }) => {
   return (
     <>
       <div className="birthdayContainer">
@@ -15,7 +15,7 @@ const HomeRightbar = ({ onlineFriends }) => {
       <h4 className="rightbarTitle">Online friends</h4>
       <ul className="rightbarFriendList">
         {onlineFriends.map((online, i) => (
-          <Online onlineFriends={online} key={i} />
+          <Online onlineFriends={online} key={i} setBar={setBar} />
         ))}
       </ul>
     </>

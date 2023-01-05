@@ -1,18 +1,12 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createConversationAction } from "../../actions/conversationActions";
 
-function SearchedFriends({
-  friend,
-  setDisplay,
-  setCurrentChat,
-  setConversations,
-  conversations,
-  setBar,
-}) {
+function SearchedFriends({ friend, setDisplay, setBar }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { conversations } = useSelector((state) => state.conversation);
 
   const handleClick = () => {
     setBar("close");
@@ -31,17 +25,9 @@ function SearchedFriends({
         }
       });
 
-      setCurrentChat(existingConv);
       navigate(`/messenger/${existingConv?._id}`);
     } else {
-      return dispatch(
-        createConversationAction(
-          friend?._id,
-          setCurrentChat,
-          setConversations,
-          conversations
-        )
-      );
+      return dispatch(createConversationAction(friend?._id, navigate));
     }
   };
 

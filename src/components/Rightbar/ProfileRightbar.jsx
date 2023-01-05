@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getFollowings } from "../../api";
 import Following from "./Followings/Following";
 
-const ProfileRightbar = ({ profileUser }) => {
+const ProfileRightbar = ({ profileUser, setBar }) => {
   const [friends, setFriends] = useState([]);
 
   async function getFollowingsUser() {
@@ -43,7 +43,7 @@ const ProfileRightbar = ({ profileUser }) => {
       <h4 className="rightbarTitle">User Friends</h4>
       <div className="rightbarFollowings">
         {friends.map((friend) => (
-          <Following user={friend} key={friend?._id} />
+          <Following user={friend} key={friend?._id} setBar={setBar} />
         ))}
       </div>
     </>

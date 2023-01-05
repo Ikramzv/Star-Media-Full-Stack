@@ -1,22 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import "./message.css";
-import { getUser } from "../../api";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import "./message.css";
 
 function Message({ message }) {
   const currentUser = useSelector((state) => state.user.user);
-  const [user, setUser] = useState();
+  const { messages } = useSelector((state) => state.messages);
   const navigate = useNavigate();
-  useEffect(() => {
-    async function getUserApi() {
-      const { data } = await getUser(message.sender);
-      setUser(data);
-    }
+  const user = useMemo(() => {
+    if (message.sender === currentUser?._id) return currentUser;
+    else return message.receiver;
+  }, [messages.length, message]);
 
-    getUserApi();
-  }, [message]);
   return (
     <div className={`message ${currentUser?._id === message.sender && "own"}`}>
       <div className="messageTop">
@@ -24,7 +20,7 @@ function Message({ message }) {
           src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
           alt=""
           className="messageImg"
-          onClick={() => navigate(`/profile/${user?._id}`)}
+          onClick={() => navigate(`/profile/${message.sender}`)}
         />
         <p className="messageText">{message.text}</p>
       </div>

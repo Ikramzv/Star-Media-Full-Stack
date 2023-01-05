@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Following({ user }) {
+function Following({ user, setBar }) {
   const navigate = useNavigate("");
   useEffect(() => {}, [user]);
   return (
     <div
       className="rightbarFollowing"
-      onClick={() => navigate(`/profile/${user._id}`)}
+      onClick={() => {
+        setBar("close");
+        navigate(`/profile/${user._id}`);
+      }}
     >
       <img
         src={user?.userProfileImage ? user?.userProfileImage : `/user.webp`}
