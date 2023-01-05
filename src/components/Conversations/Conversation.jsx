@@ -22,8 +22,6 @@ function Conversation({ conversation, setBar }) {
     }
   };
 
-  console.log("conv");
-
   return (
     <>
       <div onClick={handleClick}>
