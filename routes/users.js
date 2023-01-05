@@ -1,8 +1,8 @@
-const { Router } = require("express")
-const User = require("../models/User")
-const bcrypt = require("bcrypt")
-const verify = require("./verify")
-const Post = require("../models/Post")
+const { Router } = require("express");
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const verify = require("./verify");
+const Post = require("../models/Post");
 const router = Router();
 
 // update user
@@ -68,64 +68,145 @@ router.get("/:id", async (req, res) => {
 
 // get user with query
 
-router.get('/' , verify , async(req,res) => {
-  const { username } = req.query
-  var regex = new RegExp(["^", username, "$"].join(""), "i")
+router.get("/", verify, async (req, res) => {
+  const { username } = req.query;
+  var regex = new RegExp(["^", username, "$"].join(""), "i");
   try {
     const user = await User.findOne({
-      username: regex
-    })
-    res.status(200).json(user)
+      username: regex,
+    });
+    res.status(200).json(user);
   } catch (error) {
-    res.status(400).json(error)
+    res.status(400).json(error);
   }
-})
+});
 
-// get user's all post 
+// get user's all post
 
-router.get('/profile/:id' , verify , async(req,res) => {
-  const { id } = req.params
+router.get("/profile/:id", verify, async (req, res) => {
+  const { id } = req.params;
   try {
-      const posts = await Post.find({userId: id}).sort({createdAt: -1})
-      res.status(200).json(posts)
+    const posts = await Post.aggregate([
+      {
+        $match: {
+          userId: id,
+        },
+      },
+      {
+        $addFields: {
+          convertedUserId: {
+            $toObjectId: "$userId",
+          },
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "convertedUserId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $project: {
+          convertedUserId: 0,
+        },
+      },
+    ]);
+    res.status(200).json(posts);
   } catch (error) {
-      res.status(403).send("Error while being get user's all posts")
+    res.status(403).send(error.message);
   }
-})
+});
 
 // Get followings
 
-router.get('/followings/:id' , verify ,async(req,res) => {
-  const { id } = req.params
+router.get("/followings/:id", async (req, res) => {
+  const { id } = req.params;
   try {
-    const user = await User.findById(id)
-    const followings = user?.followings
-    const followingUser = await Promise.all(
-        followings.map(followingId => {
-          return User.findById(followingId)
-        }
-    ))
-    res.status(200).json(followingUser)
+    const followings = await User.aggregate([
+      {
+        $set: {
+          _id: {
+            $toString: "$_id",
+          },
+        },
+      },
+      {
+        $match: {
+          _id: id,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: {
+            followings: "$followings",
+          },
+          pipeline: [
+            {
+              $set: {
+                _id: {
+                  $toString: "$_id",
+                },
+              },
+            },
+            {
+              $match: {
+                $expr: {
+                  $in: ["$_id", "$$followings"],
+                },
+              },
+            },
+            {
+              $project: {
+                followings: 0,
+                followers: 0,
+                password: 0,
+                email: 0,
+              },
+            },
+          ],
+          as: "followingss",
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            followings: "$followingss",
+          },
+        },
+      },
+    ]);
+    res.status(200).json(followings[0]);
   } catch (error) {
-    res.status(400).send('Error while getting online friends')
+    res.status(400).send(error.message);
   }
-})
+});
 
 // follow a user
 
 router.put("/:id/follow", verify, async (req, res) => {
   const { id } = req.params;
-  
+
   if (req.user.id !== id) {
     try {
       const user = await User.findById(id);
       const currentUser = await User.findById(req.user.id);
       if (!user?.followers?.includes(req.user.id)) {
-        await user?.updateOne({$push: {followers: req.user.id} });
-        await currentUser?.updateOne({$push: {followings: id} });
-        res.status(200).json('User has been followed')
+        await user?.updateOne({ $push: { followers: req.user.id } });
+        await currentUser?.updateOne({ $push: { followings: id } });
+        res.status(200).json("User has been followed");
       } else {
-        res.status(400).send('You are already following this user')
+        res.status(400).send("You are already following this user");
       }
     } catch (error) {
       res.status(400).send(error.message);
@@ -139,15 +220,15 @@ router.put("/:id/follow", verify, async (req, res) => {
 
 router.put("/:id/unfollow", verify, async (req, res) => {
   const { id } = req.params;
-  
+
   if (req.user.id !== id) {
     try {
       const user = await User.findById(id);
       const currentUser = await User.findById(req.user.id);
-      if(user?.followers?.includes(req.user.id))
-      await user?.updateOne({$pull: {followers: req.user.id}});
-      await currentUser?.updateOne({$pull: {followings: id}});
-      res.status(200).json('User has been unfollowed')
+      if (user?.followers?.includes(req.user.id))
+        await user?.updateOne({ $pull: { followers: req.user.id } });
+      await currentUser?.updateOne({ $pull: { followings: id } });
+      res.status(200).json("User has been unfollowed");
     } catch (error) {
       res.status(400).send(error.message);
     }
