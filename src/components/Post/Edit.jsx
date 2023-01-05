@@ -7,6 +7,7 @@ function Edit({ postId, postDescription }) {
   const dispatch = useDispatch();
   const editPost = () => {
     const promp = prompt("", postDescription);
+    if (promp == null) return;
     if (promp === postDescription) return;
     dispatch(updatePostAction(postId, promp));
   };
