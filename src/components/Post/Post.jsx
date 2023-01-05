@@ -34,8 +34,8 @@ function Post({ post }) {
   const navigate = useNavigate();
 
   const desc = useMemo(() => {
-    const urlMatched = post?.desc.match(regexpUrl);
-    let des = post?.desc;
+    const urlMatched = post.desc?.match(regexpUrl);
+    let des = post.desc;
     let returnValue;
     urlMatched?.forEach((url) => {
       const convertToArr = des.split(url);
