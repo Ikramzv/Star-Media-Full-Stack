@@ -24,8 +24,6 @@ const Like = ({ post, user }) => {
   );
 };
 
-let str = `JavaScript Entusiast ! contact : ikramzulfugarcodein@gmail.com github: https://github.com/Ikramzv https://id.heroku.com/login hello test vbro https://github.com/Ikramzv?tab=repositories hrh dsf https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_regexp_ahead https://www.google.com/search?q=+instead+of+www+%3F&biw=1536&bih=722&sxsrf=ALiCzsaEuClhVaUf-Dfec1_XelWPVnN8Dg%3A1672868516241&ei=pPK1Y_qpDqSprgSc24fIAQ&ved=0ahUKEwj6i6rt8K78AhWklIsKHZztARkQ4dUDCA8&uact=5&oq=+instead+of+www+%3F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIJCAAQBxAeEPEEMgkIABAIEB4Q8QQyCAgAEAgQHhAPOgoIABBHENYEELADOggIIRDDBBCgAToFCAAQogRKBAhBGABKBAhGGABQqAlYuxdgjxpoAXABeACAAf8BiAGjDZIBBjAuMTAuMZgBAKABAcgBCMABAQ&sclient=gws-wiz-serp`;
-
 const regexpUrl =
   /(http|https):\/\/([A-z]?(\.))?[A-z\d\._]{1,}\.(com|az|ru|org|co|net|tr|us)(\/[A-z\d\S]{1,})?/gi; // url
 
@@ -36,8 +34,8 @@ function Post({ post }) {
   const navigate = useNavigate();
 
   const desc = useMemo(() => {
-    const urlMatched = post.desc.match(regexpUrl);
-    let des = post.desc;
+    const urlMatched = post?.desc.match(regexpUrl);
+    let des = post?.desc;
     let returnValue;
     urlMatched?.forEach((url) => {
       const convertToArr = des.split(url);
@@ -56,7 +54,7 @@ function Post({ post }) {
       );
       returnValue = convertToArr;
     });
-    return returnValue ? returnValue : post.desc;
+    return returnValue ? returnValue : post?.desc;
   }, [post?.desc]);
 
   const deletePost = () => {
