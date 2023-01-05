@@ -18,7 +18,7 @@ function Sidebar({ messenger, currentChat }) {
       }
       getUserFollowings();
     }
-  }, [user._id]);
+  }, [user?._id]);
 
   return (
     <>
