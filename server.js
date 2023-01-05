@@ -60,16 +60,20 @@ io.on("connection", (socket) => {
     io.emit("getUsers", users);
   });
   // send message and get message
-  socket.on("sendMessage", ({ senderId, receiverId, text, conversationId }) => {
-    const user = getUser(receiverId);
-    // if there is a online friend send an event to client else don't send an event
-    user &&
-      socket.to(user.socketId).emit("getMessage", {
-        senderId,
-        text,
-        conversationId,
-      });
-  });
+  socket.on(
+    "sendMessage",
+    ({ senderId, receiverId, receiver, text, conversationId }) => {
+      const user = getUser(receiverId);
+      // if there is a online friend send an event to client else don't send an event
+      user &&
+        socket.to(user.socketId).emit("getMessage", {
+          senderId,
+          text,
+          conversationId,
+          receiver,
+        });
+    }
+  );
 
   // disconnection
   socket.on("disconnect", () => {
