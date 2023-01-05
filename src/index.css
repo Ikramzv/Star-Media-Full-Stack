@@ -6,8 +6,12 @@
     box-sizing: border-box;
 }
 
+:root {
+    --main-color: rgb(97, 8, 26);
+}
+
 ::selection {
-    background-color: rgb(97, 8, 26);
+    background-color: var(--main-color);
     color: white;
 }
 
