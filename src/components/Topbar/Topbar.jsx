@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from "react";
-import "./topbar.css";
 import {
   ArrowBack,
   Chat,
-  Close,
-  Logout,
   Notifications,
   Person,
   Search,
 } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logOutUser } from "../../actions/userAction";
-import { getAllMessages, getUserWithQuery } from "../../api";
+import { useNavigate } from "react-router-dom";
 import { SET_UNREAD_MESSAGES } from "../../actions/actionTypes";
+import { getAllMessages, getUserWithQuery } from "../../api";
+import DropDown from "./DropDown";
+import "./topbar.css";
 
 function Topbar() {
   const [topRight, setTopRight] = useState(false);
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user.user);
-  const [dropDown, setDropDown] = useState(false);
-  const unreadMessages = useSelector((state) => state.messages.unreadMessages);
+  const { user, unreadMessages } = useSelector((state) => ({
+    user: state.user.user,
+    unreadMessages: state.messages.unreadMessages,
+  }));
   const dispatch = useDispatch();
   const [value, setValue] = useState("");
-
-  const logOut = () => {
-    dispatch(logOutUser());
-  };
 
   const handleKeyUp = async (e) => {
     if (e.keyCode === 13) {
@@ -106,39 +101,7 @@ function Topbar() {
           </div>
         </div>
         <div className="topbarDropdown">
-          <img
-            src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
-            alt=""
-            className="topbar-img"
-            onMouseOver={() => setDropDown(true)}
-          />
-          {dropDown && (
-            <ul className="dropdownList">
-              <Close
-                className="closeDropdown"
-                onTransitionEnd={() => setDropDown(false)}
-              />
-              <li className="dropdownItem" onClick={() => setDropDown(false)}>
-                <Link
-                  to={`/profile/${user?._id}`}
-                  style={{
-                    color: "white",
-                    textDecoration: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
-                  <Person />
-                  Profile
-                </Link>
-              </li>
-              <li className="dropdownItem" onClick={logOut}>
-                <Logout />
-                Logout
-              </li>
-            </ul>
-          )}
+          <DropDown user={user} />
         </div>
       </div>
     </div>

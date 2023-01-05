@@ -1,46 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { getTimelinePosts } from "../../actions/postAction";
-import { getUserAllPost } from "../../api";
+import { getProfilePostsAction } from "../../actions/postAction";
 import Post from "../Post/Post";
 import Share from "../Share/Share";
 import "./Feed.css";
 import Wrapper from "./Wrapper";
 
-function Feed({ userProfilePosts, profileId }) {
-  const user = useSelector((state) => state.user.user);
+function Feed({ isProfilePage, profileUser }) {
   const { posts } = useSelector((state) => state.posts);
-  const [profilePosts, setProfilePosts] = useState([]);
   const dispatch = useDispatch();
 
   async function getProfilePosts() {
-    const { data } = await getUserAllPost(profileId);
-    setProfilePosts(data);
+    dispatch(getProfilePostsAction(profileUser?._id));
   }
 
   useEffect(() => {
-    dispatch(getTimelinePosts());
-  }, []);
-
-  useEffect(() => {
-    if (userProfilePosts) {
+    if (isProfilePage) {
       getProfilePosts();
     }
-  }, [profileId]);
+  }, [profileUser?._id]);
 
   return (
     <div className="feed">
-      <Wrapper posts={posts} isProfile={userProfilePosts}>
-        {profileId ? profileId === user?._id && <Share /> : <Share />}
-        {!userProfilePosts
-          ? posts
-              .sort((a, b) => b.createdAt - a.createdAt)
-              .map((post, i) => <Post post={post} key={i} />)
-          : profilePosts?.map((post, i) => <Post post={post} key={i} />)}
+      <Wrapper posts={posts} isProfile={{ isProfilePage, profileUser }}>
+        <Share />
+        {posts
+          .sort((a, b) => b.createdAt - a.createdAt)
+          .map((post) => (
+            <Post post={post} key={post._id} />
+          ))}
       </Wrapper>
     </div>
   );
 }
 
-export default Feed;
+export default React.memo(Feed);

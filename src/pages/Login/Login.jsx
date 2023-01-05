@@ -24,14 +24,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData) {
-      let isError = true;
-      dispatch(loginUser(formData, navigate, isError));
-      if (!isError) {
-        setFormData({
-          email: "",
-          password: "",
-        });
-      }
+      dispatch(loginUser(formData, navigate));
     }
   };
 

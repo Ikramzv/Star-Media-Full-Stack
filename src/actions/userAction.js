@@ -1,11 +1,10 @@
 import { login, register } from "../api";
 import { END_LOADING, LOGOUT, SET_USER, START_LOADING } from "./actionTypes";
 
-export const loginUser = (loginData, navigate, isError) => async (dispatch) => {
+export const loginUser = (loginData, navigate) => async (dispatch) => {
   dispatch({ type: START_LOADING });
   try {
     const { data } = await login(loginData);
-    isError = false;
     dispatch({
       type: SET_USER,
       payload: data,

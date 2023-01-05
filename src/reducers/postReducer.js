@@ -3,7 +3,9 @@ import {
   DELETE_POST,
   LIKE_POST,
   SET_ADDITIONAL_POSTS_TO_SHOW,
+  SET_PROFILE_POSTS,
   SET_TIMELINE_POSTS,
+  UPDATE_POST,
 } from "../actions/actionTypes";
 
 export default (state = { posts: [], postUsers: [] }, action) => {
@@ -11,12 +13,17 @@ export default (state = { posts: [], postUsers: [] }, action) => {
     case SET_TIMELINE_POSTS:
       return {
         ...state,
-        posts: action.payload,
+        posts: [...state.posts, ...action.payload],
       };
     case SET_ADDITIONAL_POSTS_TO_SHOW:
       return {
         ...state,
         posts: [...state.posts, ...action.payload],
+      };
+    case SET_PROFILE_POSTS:
+      return {
+        ...state,
+        posts: action.payload,
       };
     case LIKE_POST:
       return {
@@ -37,6 +44,19 @@ export default (state = { posts: [], postUsers: [] }, action) => {
       return {
         ...state,
         posts: [action.payload, ...state.posts],
+      };
+    case UPDATE_POST:
+      return {
+        ...state,
+        posts: state.posts.map((post) => {
+          if (post._id === action.postId) {
+            return {
+              ...post,
+              desc: action.postDescription,
+            };
+          }
+          return post;
+        }),
       };
     case DELETE_POST:
       return {

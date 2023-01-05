@@ -15,7 +15,7 @@ function Sidebar({ messenger, setCurrentChat, currentChat }) {
     if (user) {
       async function getUserFollowings() {
         const { data } = await getFollowings(user?._id);
-        setFollowings(data);
+        setFollowings(data.followings);
       }
       getUserFollowings();
     }
@@ -68,4 +68,4 @@ function Sidebar({ messenger, setCurrentChat, currentChat }) {
   );
 }
 
-export default Sidebar;
+export default React.memo(Sidebar);

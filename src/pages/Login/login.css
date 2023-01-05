@@ -125,16 +125,6 @@ fieldset input[type='submit']:active , .loginRegisterBtn:active {
     font-style: italic;
 }
 
-.loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 50px !important;
-    height: 50px !important;
-    border-radius: 50%;
-}
-
 @media (max-width: 768px) {
     .loginLogo {
         font-size: 40px;

@@ -38,6 +38,16 @@
     box-shadow: 1px 2px 3px 0 hsl(125, 70%, 10%);
 }
 
+.loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50%;
+}
+
 .shareHr {
     margin-block: 15px;
 }

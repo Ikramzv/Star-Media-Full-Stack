@@ -6,6 +6,43 @@
     padding: 20px;
 }
 
+.additional {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;    
+    gap: 5px;
+}
+
+.additional > h4 {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.763);
+    text-align: center;
+    line-height: 1.3;
+    width: 70%;
+}
+
+.additional > p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.419);
+}
+
+.additional > button {
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    border-radius: 4px;
+    font-size: 14x;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    transition: all ease 200ms;
+}
+
+.additional > button:active {
+    scale: 0.9;
+}
+
 @media (max-width: 768px) {
     .feed {
         flex: 1;

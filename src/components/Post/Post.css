@@ -33,38 +33,48 @@
 }
 
 .topRight {
-    position: relative;
-    
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 5px;
 }
 
 .postTopRightSetting {
     cursor: pointer;
 }
 
-.postDeleteBtn {
-    position: absolute;
-    left: -50px;
-    top: 110%;
-    transform: scale(1);
+.postBtn {
     transition: 300ms ease all;
-    width: max-content;
+    height: 100%;
     display: flex;
     align-items: center;
     border-radius: 10px;
-    color: crimson;
     border: none;
-    background-color: rgba(0, 0, 0, 0.136);
+    background-color: white;
     padding: 6px 8px;
     cursor: pointer;
+    color: var(--curr-color);
+    border: 1px solid var(--curr-color);
 }
 
-.postDeleteBtn:hover {
-    background-color: rgba(0, 0, 0, 0.401);
+.postBtn:hover {
+    background-color: var(--curr-color);
+    color: white;
 }
 
-.postDeleteBtn > svg {
+.postBtn > svg {
     font-size: 16px !important;
 }
+
+.postDeleteBtn {
+    --curr-color: crimson;
+}
+
+.postEditBtn {
+    --curr-color:rgba(0, 0, 255, 0.458);
+}
+
 
 .postUsername {
     font-size: 15px;
@@ -81,8 +91,15 @@
     margin-block: 20px;
 }
 
-.postText {
+.postDescription {
     margin-block: 8px;
+}
+
+.post_description_link {
+    color: var(--main-color);
+    cursor: pointer;
+    font-size: 1.1;
+    font-weight: bold;
 }
 
 .postCenterImg {
@@ -133,7 +150,7 @@
         align-items: center;
     }
 
-    .postText {
+    .postDescription {
         align-self: flex-start;
     }
 

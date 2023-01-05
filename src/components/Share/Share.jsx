@@ -11,12 +11,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { createUserPost } from "../../actions/postAction";
 import "./share.css";
 
+const regexpUrl =
+  /(http|https):\/\/(www?(\.))?[A-z\d]{1,}\.(com|az|ru|org|co|net|tr|us)(\/[A-z\d\S]{1,})?/gi; // url
+
 function Share() {
   const user = useSelector((state) => state.user.user);
-  const [desc, setDesc] = useState("");
+  const [desc, setDesc] = useState([]);
   const [image, setImage] = useState("");
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state);
+
+  const handleChange = (e) => {
+    setDesc(e.target.value);
+  };
 
   const imageToUrl = (file) => {
     const reader = new FileReader();
@@ -30,10 +37,13 @@ function Share() {
     e.preventDefault();
     if (desc.length > 0) {
       dispatch(
-        createUserPost({
-          desc,
-          img: image,
-        })
+        createUserPost(
+          {
+            desc,
+            img: image,
+          },
+          user
+        )
       );
       setImage("");
       setDesc("");
@@ -57,7 +67,7 @@ function Share() {
             placeholder={`What's up , ${user?.username}?`}
             className="shareInput"
             value={desc}
-            onChange={(e) => setDesc(e.target.value)}
+            onChange={handleChange}
           ></textarea>
         </div>
         <hr className="shareHr" />
