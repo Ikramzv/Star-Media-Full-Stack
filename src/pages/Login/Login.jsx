@@ -1,4 +1,3 @@
-import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +43,6 @@ function Login() {
 
   return (
     <div className="login">
-      {loading && <CircularProgress className="loading" />}
       <div className="loginWrapper">
         <div className="loginLeft">
           <h3 className="loginLogo">Star Media</h3>
@@ -89,7 +87,11 @@ function Login() {
                 Do you have account ? If not it is time to <b>register</b> :{" "}
               </span>
               <br />
-              <button className="loginRegisterBtn" onClick={handleClick}>
+              <button
+                className="loginRegisterBtn"
+                disabled={loading}
+                onClick={handleClick}
+              >
                 Register
               </button>
             </form>

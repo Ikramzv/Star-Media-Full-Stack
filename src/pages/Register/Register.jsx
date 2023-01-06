@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Delete } from "@mui/icons-material";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "./register.css";
-import { registerUser } from "../../actions/userAction";
-import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { END_LOADING, START_LOADING } from "../../actions/actionTypes";
+import { registerUser } from "../../actions/userAction";
+import "./register.css";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -71,7 +69,6 @@ function Register() {
 
   return (
     <div className="register">
-      {loading && <CircularProgress className="loading" />}
       <div className="registerWrapper">
         <div className="registerLeft">
           <h3 className="registerLogo">Star Media</h3>
@@ -172,7 +169,6 @@ function Register() {
                     />
                   </div>
                   <div className="registerFormInput userProfileImg">
-                    {loading && <CircularProgress className="loading" />}
                     {userProfileImage ? (
                       <div className="userProfileImgContainer">
                         <img
@@ -211,7 +207,11 @@ function Register() {
                   Back to <b>login</b> :{" "}
                 </span>
                 <br />
-                <button className="backToLogin" onClick={handleClick}>
+                <button
+                  className="backToLogin"
+                  disabled={loading}
+                  onClick={handleClick}
+                >
                   Back
                 </button>
               </fieldset>
