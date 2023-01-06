@@ -1,6 +1,6 @@
 # App hosting url
 
-https://star-media-17e47.web.app
+https://starmedia-668c4.web.app/
 
 # Introduction
 
