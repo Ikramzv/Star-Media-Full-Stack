@@ -46,15 +46,21 @@ function Mesenger() {
         {id ? (
           <>
             <MessengerContainer>
-              {messages.map((m, i) => {
-                return (
-                  <Message
-                    receiver={currentChat?.receiver}
-                    message={m}
-                    key={i}
-                  />
-                );
-              })}
+              {messages.length ? (
+                messages.map((m, i) => {
+                  return (
+                    <Message
+                      receiver={currentChat?.receiver}
+                      message={m}
+                      key={i}
+                    />
+                  );
+                })
+              ) : (
+                <div className="noMessagesContainer">
+                  <span>Chat your friend</span>
+                </div>
+              )}
             </MessengerContainer>
             <div className="chatBoxBottom">
               <ChatInput
@@ -65,7 +71,7 @@ function Mesenger() {
           </>
         ) : (
           <div className="noConversationContainer">
-            <span>Open a conversation to start chat</span>
+            <span>Open a conversation to start chat from the sidebar</span>
           </div>
         )}
       </div>
