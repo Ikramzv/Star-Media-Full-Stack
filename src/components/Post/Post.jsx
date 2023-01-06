@@ -34,28 +34,30 @@ function Post({ post }) {
   const navigate = useNavigate();
 
   const desc = useMemo(() => {
-    const urlMatched = post.desc?.match(regexpUrl);
-    let des = post.desc;
+    const urlMatched = String(post?.desc)?.match(regexpUrl);
+    let des = post?.desc;
     let returnValue;
-    urlMatched?.forEach((url) => {
-      const convertToArr = des.split(url);
-      const index = convertToArr.length === 1 ? 0 : 1;
-      convertToArr.splice(
-        index,
-        0,
-        <a
-          href={url}
-          key={url}
-          className="post_description_link"
-          target={"_blank"}
-        >
-          {url}
-        </a>
-      );
-      returnValue = convertToArr;
-    });
+    if (urlMatched) {
+      urlMatched?.forEach((url) => {
+        const convertToArr = des?.split(url);
+        const index = convertToArr.length === 1 ? 0 : 1;
+        convertToArr.splice(
+          index,
+          0,
+          <a
+            href={url}
+            key={url}
+            className="post_description_link"
+            target={"_blank"}
+          >
+            {url}
+          </a>
+        );
+        returnValue = convertToArr;
+      });
+    }
     return returnValue ? returnValue : post?.desc;
-  }, [post?.desc]);
+  }, [post]);
 
   const deletePost = () => {
     setDisabled(true);
@@ -92,7 +94,7 @@ function Post({ post }) {
             </span>
           </div>
           <div className="topRight">
-            {post.userId === user?._id && (
+            {post?.userId === user?._id && (
               <>
                 <Edit postId={post?._id} postDescription={post?.desc} />
                 <button
@@ -108,14 +110,11 @@ function Post({ post }) {
         </div>
         <figure className="postCenter">
           <figcaption className="postDescription">{desc}</figcaption>
-          <img src={post.img} alt="" className="postCenterImg" />
+          <img src={post?.img} alt="" className="postCenterImg" />
         </figure>
         <div className="postBottom">
           <div className="postBottomLeft">
             <Like post={post} user={user} />
-          </div>
-          <div className="postBottomRight">
-            <span className="postCommentText">9 comments</span>
           </div>
         </div>
       </div>

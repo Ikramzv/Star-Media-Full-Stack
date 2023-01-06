@@ -26,7 +26,9 @@ function Home() {
     } else if (socket && user) {
       socket.current.emit("sendUser", user?._id);
       socket.current.on("getUsers", (users) => {
-        setOnlineFriends(users.filter((u) => u.userId !== user?._id));
+        const onlines = users.filter((u) => u.userId !== user?._id);
+        if (!onlines.length) return;
+        setOnlineFriends(onlines);
       });
     }
   }, [user]);
@@ -42,4 +44,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default React.memo(Home);
