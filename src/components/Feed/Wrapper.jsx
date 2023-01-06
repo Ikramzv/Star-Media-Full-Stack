@@ -28,7 +28,7 @@ function Wrapper({ isProfile, posts, children }) {
   const [shownPosts, setShownPosts] = useState("mainPosts");
   const [scrollY, setScrollY] = useState(0);
   const [incomingData, setIncomingData] = useState({
-    mainPosts: posts.length > 0 ? [null] : [],
+    mainPosts: [null],
     additionalPosts: [null],
   });
 
@@ -38,7 +38,7 @@ function Wrapper({ isProfile, posts, children }) {
   const fetchPosts = () => {
     since.current = figureOutSince(shownPosts, posts, since);
     const container = wrapperRef.current;
-    const limit = window.innerHeight + window.scrollY + 275;
+    const limit = window.innerHeight + window.scrollY + 350;
     if (limit > container?.offsetHeight) {
       if (incomingData[shownPosts].length && !loading) {
         if (shownPosts === "mainPosts") {
@@ -87,7 +87,7 @@ function Wrapper({ isProfile, posts, children }) {
         since.current = new Date().toISOString();
       }
       const sinc = since.current ? since.current : undefined;
-      dispatch(getTimelinePosts(sinc, undefined, completePosts));
+      dispatch(getTimelinePosts(sinc, setIncomingData, completePosts));
     }
   }, []);
 
