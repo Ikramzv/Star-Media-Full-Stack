@@ -18,22 +18,24 @@ import {
   START_LOADING,
   UPDATE_POST,
 } from "./actionTypes";
-export const getTimelinePosts = (since, setData) => async (dispatch) => {
-  dispatch({ type: START_LOADING });
-  try {
-    const { data } = await getTimeline(since);
-    if (setData) setData((prev) => ({ ...prev, mainPosts: data }));
-    if (data.length) {
-      dispatch({
-        type: SET_TIMELINE_POSTS,
-        payload: data,
-      });
+export const getTimelinePosts =
+  (since, setData, complete) => async (dispatch) => {
+    dispatch({ type: START_LOADING });
+    try {
+      const { data } = await getTimeline(since);
+      if (setData) setData((prev) => ({ ...prev, mainPosts: data }));
+      if (data.length) {
+        dispatch({
+          type: SET_TIMELINE_POSTS,
+          payload: data,
+          complete,
+        });
+      }
+    } catch (error) {
+      Promise.reject(error.response.data);
     }
-  } catch (error) {
-    Promise.reject(error.response.data);
-  }
-  dispatch({ type: END_LOADING });
-};
+    dispatch({ type: END_LOADING });
+  };
 
 export const getProfilePostsAction = (userId) => async (dispatch) => {
   dispatch({ type: START_LOADING });

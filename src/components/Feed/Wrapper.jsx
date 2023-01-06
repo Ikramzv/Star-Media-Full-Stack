@@ -78,9 +78,16 @@ function Wrapper({ isProfile, posts, children }) {
   }, [isProfile.isProfilePage]);
 
   useEffect(() => {
-    if (!isProfile.isProfilePage) {
-      if (posts.length) since.current = posts.at(-1)?.createdAt;
-      dispatch(getTimelinePosts(since.current ? since.current : undefined));
+    if (!isProfile.isProfilePage && !loading) {
+      // when home page have been visited from another route such as /profile ,
+      // I am saying that fetch home page posts remove profile posts from state by signing completePosts = "complete"
+      let completePosts;
+      if (posts.length) {
+        completePosts = "complete";
+        since.current = new Date().toISOString();
+      }
+      const sinc = since.current ? since.current : undefined;
+      dispatch(getTimelinePosts(sinc, undefined, completePosts));
     }
   }, []);
 

@@ -13,7 +13,9 @@ export default (state = { posts: [], postUsers: [] }, action) => {
     case SET_TIMELINE_POSTS:
       return {
         ...state,
-        posts: [...state.posts, ...action.payload],
+        posts: action.complete
+          ? action.payload
+          : [...state.posts, ...action.payload],
       };
     case SET_ADDITIONAL_POSTS_TO_SHOW:
       return {
