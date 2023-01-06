@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { createUserPost } from "../../actions/postAction";
 import "./share.css";
 
@@ -18,7 +19,7 @@ function Share() {
   const [desc, setDesc] = useState([]);
   const [image, setImage] = useState("");
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state);
+  const { id: profileId } = useParams();
 
   const handleChange = (e) => {
     setDesc(e.target.value);
@@ -50,6 +51,8 @@ function Share() {
       return alert("Description must be 1 character at least");
     }
   };
+
+  if (profileId && profileId !== user?._id) return null;
 
   return (
     <div className="share">
