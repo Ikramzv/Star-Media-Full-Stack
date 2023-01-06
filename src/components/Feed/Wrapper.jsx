@@ -8,8 +8,6 @@ import useDebounce from "../../hooks/useDebounce";
 import useUpdateEffect from "../../hooks/useUpdateEffect";
 import NotFound from "./NotFound";
 
-let initialLoadScroll = true;
-
 function figureOutSince(shownPosts, posts, since) {
   if (shownPosts === "mainPosts") {
     return posts.at(-1)?.createdAt;
@@ -32,13 +30,13 @@ function Wrapper({ isProfile, posts, children }) {
     additionalPosts: [null],
   });
 
-  const debouncedScrollY = useDebounce(scrollY, 75);
+  const debouncedScrollY = useDebounce(scrollY, 250);
   let since = useRef(null);
 
   const fetchPosts = () => {
     since.current = figureOutSince(shownPosts, posts, since);
     const container = wrapperRef.current;
-    const limit = window.innerHeight + window.scrollY + 350;
+    const limit = window.innerHeight + window.scrollY + 1200;
     if (limit > container?.offsetHeight) {
       if (incomingData[shownPosts].length && !loading) {
         if (shownPosts === "mainPosts") {
@@ -58,12 +56,7 @@ function Wrapper({ isProfile, posts, children }) {
   }, [shownPosts]);
 
   useUpdateEffect(() => {
-    if (!initialLoadScroll) {
-      fetchPosts();
-    }
-    return () => {
-      initialLoadScroll = false;
-    };
+    fetchPosts();
   }, [debouncedScrollY]);
 
   useEffect(() => {
