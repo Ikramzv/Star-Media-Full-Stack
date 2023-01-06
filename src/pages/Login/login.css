@@ -84,12 +84,22 @@ legend {
     padding: 10px 20px;
     font-size: 16px;
     text-align: center;
-    border: none;
+    color: black;
+    border: 0.5px solid var(--main-color);
     outline: none;
-    transition: 500ms ease box-shadow;
+    transition: 300ms ease;
 }
 
-.loginFormInput > label {
+.loginFormInput > input:focus {
+    color: white;
+}
+
+.loginFormInput > input::selection {
+    background-color: cadetblue;
+}
+
+.loginFormInput > label:has(+ input:focus) {
+    color: var(--main-color);
     font-weight: bold;
 }
 
@@ -111,7 +121,11 @@ fieldset input[type='submit']:active , .loginRegisterBtn:active {
 }
 
 .loginFormInput > input:focus {
-    box-shadow: 0 1px 2px 0 black;
+    background: var(--main-color);
+}
+
+.loginFormInput > input:focus::placeholder {
+    color: white;
 }
 
 .loginLogo {
