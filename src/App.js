@@ -19,8 +19,6 @@ function App() {
   useEffect(() => {
     if (!user) {
       navigate("/login");
-    } else {
-      navigate("/");
     }
   }, [user]);
   return (
