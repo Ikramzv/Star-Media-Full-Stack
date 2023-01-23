@@ -36,27 +36,31 @@ function Post({ post }) {
   const desc = useMemo(() => {
     const urlMatched = String(post?.desc)?.match(regexpUrl);
     let des = post?.desc;
+    let end = "";
     let returnValue;
     if (urlMatched) {
-      urlMatched?.forEach((url) => {
-        const convertToArr = des?.split(url);
-        const index = convertToArr.length === 1 ? 0 : 1;
-        convertToArr.splice(
-          index,
-          0,
+      urlMatched?.forEach((url, i) => {
+        const description = returnValue || [];
+        const index = des?.indexOf(url);
+        const start = des.slice(0, index);
+        end = des.slice(index + url.length);
+        const link = (
           <a
             href={url}
-            key={url}
+            key={i}
             className="post_description_link"
             target={"_blank"}
           >
             {url}
           </a>
         );
-        returnValue = convertToArr;
+        description.push(start, link);
+        des = end;
+        returnValue = description;
       });
+      returnValue.push(end);
     }
-    return returnValue ? returnValue : post?.desc;
+    return returnValue || post?.desc;
   }, [post]);
 
   const deletePost = () => {
