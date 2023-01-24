@@ -1,8 +1,9 @@
 import { Add, Remove } from "@mui/icons-material";
 import React, { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { followUserApi, getUser, unfollowUserApi } from "../../api";
+import { getUserAction } from "../../actions/userAction";
+import { followUserApi, unfollowUserApi } from "../../api";
 import Feed from "../../components/Feed/Feed";
 import Rightbar from "../../components/Rightbar/Rightbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
@@ -12,16 +13,12 @@ function Profile() {
   const [user, setUser] = useState({});
   const { id } = useParams();
   const currentUser = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
 
   const isFollows = useMemo(
     () => user.followers?.includes(currentUser._id),
     [user?.followers?.length]
   );
-
-  async function getUserForProfile() {
-    const { data } = await getUser(id);
-    setUser(data);
-  }
 
   const followUser = async () => {
     if (!user.followers.some((id) => id === currentUser?._id)) {
@@ -40,7 +37,7 @@ function Profile() {
   };
 
   useEffect(() => {
-    getUserForProfile();
+    dispatch(getUserAction(id, setUser));
   }, [id]);
 
   return (
