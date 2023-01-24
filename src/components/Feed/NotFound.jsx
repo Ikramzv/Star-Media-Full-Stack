@@ -11,19 +11,29 @@ function NotFound({ incomingData, setShownPosts, shownPosts, profileUser }) {
   };
 
   if (profileUser?._id) {
-    return !posts.length ? (
-      profileUser?._id !== currentUser?._id ? (
-        <div className="additional">
-          <h4>{profileUser.username}</h4>
-          <p>hasn't already shared post yet !</p>
-        </div>
+    return !incomingData.mainPosts.length < 5 ? (
+      !posts.length ? (
+        profileUser?._id !== currentUser?._id ? (
+          <div className="additional">
+            <h4>{profileUser.username}</h4>
+            <p>hasn't already shared post yet !</p>
+          </div>
+        ) : (
+          <div className="additional">
+            <h4>{currentUser?.username}</h4>
+            <p>You haven't already shared post yet !</p>
+            <h4>
+              There are no posts , anyway. Maybe do you want to share a post ?{" "}
+            </h4>
+          </div>
+        )
       ) : (
         <div className="additional">
-          <h4>{currentUser?.username}</h4>
-          <p>You haven't already shared post yet !</p>
-          <h4>
-            There are no posts , anyway. Maybe do you want to share a post ?{" "}
-          </h4>
+          <button
+            onClick={() => window.scrollTo({ behavior: "smooth", top: 0 })}
+          >
+            Go to top
+          </button>
         </div>
       )
     ) : null;
