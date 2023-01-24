@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAdditionalPostsToShow,
+  getProfilePostsAction,
   getTimelinePosts,
 } from "../../actions/postAction";
 import useDebounce from "../../hooks/useDebounce";
@@ -26,23 +27,34 @@ function Wrapper({ isProfile, posts, children }) {
   const [shownPosts, setShownPosts] = useState("mainPosts");
   const [scrollY, setScrollY] = useState(0);
   const [incomingData, setIncomingData] = useState({
-    mainPosts: [null],
-    additionalPosts: [null],
+    mainPosts: new Array(5),
+    additionalPosts: new Array(5),
   });
 
   const debouncedScrollY = useDebounce(scrollY, 250);
+
   let since = useRef(null);
 
-  const fetchPosts = () => {
+  const fetchPosts = ({ isProfilePage, profileUser }) => {
     since.current = figureOutSince(shownPosts, posts, since);
     const container = wrapperRef.current;
     const limit = window.innerHeight + window.scrollY + 1200;
     if (limit > container?.offsetHeight) {
-      if (incomingData[shownPosts].length && !loading) {
-        if (shownPosts === "mainPosts") {
-          dispatch(getTimelinePosts(since.current, setIncomingData));
+      if (incomingData[shownPosts].length >= 5 && !loading) {
+        if (isProfilePage) {
+          dispatch(
+            getProfilePostsAction(
+              profileUser._id,
+              since.current,
+              setIncomingData
+            )
+          );
         } else {
-          dispatch(getAdditionalPostsToShow(since.current, setIncomingData));
+          if (shownPosts === "mainPosts") {
+            dispatch(getTimelinePosts(since.current, setIncomingData));
+          } else {
+            dispatch(getAdditionalPostsToShow(since.current, setIncomingData));
+          }
         }
       }
     }
@@ -51,27 +63,29 @@ function Wrapper({ isProfile, posts, children }) {
   useEffect(() => {
     if (shownPosts === "additionalPosts") {
       since.current = null;
-      fetchPosts();
+      fetchPosts({});
     }
   }, [shownPosts]);
 
   useUpdateEffect(() => {
-    fetchPosts();
-  }, [debouncedScrollY]);
+    if (isProfile.isProfilePage) fetchPosts(isProfile);
+    else fetchPosts({});
+  }, [debouncedScrollY, isProfile.profileUser?._id]);
 
   useEffect(() => {
     const handleOnScroll = (e) => {
       setScrollY(window.scrollY);
     };
-    if (!isProfile.isProfilePage) {
-      window.addEventListener("scroll", handleOnScroll);
-    } else {
+
+    window.addEventListener("scroll", handleOnScroll);
+
+    return () => {
       window.removeEventListener("scroll", handleOnScroll);
-    }
-  }, [isProfile.isProfilePage]);
+    };
+  }, []);
 
   useEffect(() => {
-    if (!isProfile.isProfilePage && !loading) {
+    if (!loading) {
       // when home page have been visited from another route such as /profile ,
       // I am saying that fetch home page posts remove profile posts from state by signing completePosts = "complete"
       let completePosts;
@@ -80,7 +94,18 @@ function Wrapper({ isProfile, posts, children }) {
         since.current = new Date().toISOString();
       }
       const sinc = since.current ? since.current : undefined;
-      dispatch(getTimelinePosts(sinc, setIncomingData, completePosts));
+      if (isProfile.isProfilePage) {
+        dispatch(
+          getProfilePostsAction(
+            isProfile.profileUser._id,
+            since.current,
+            setIncomingData,
+            completePosts
+          )
+        );
+      } else {
+        dispatch(getTimelinePosts(sinc, setIncomingData, completePosts));
+      }
     }
   }, []);
 
