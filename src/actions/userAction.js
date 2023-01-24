@@ -1,4 +1,4 @@
-import { login, register } from "../api";
+import { getUser, login, register } from "../api";
 import { END_LOADING, LOGOUT, SET_USER, START_LOADING } from "./actionTypes";
 
 export const loginUser = (loginData, navigate) => async (dispatch) => {
@@ -14,6 +14,21 @@ export const loginUser = (loginData, navigate) => async (dispatch) => {
     alert(error.response.data);
   }
   dispatch({ type: END_LOADING });
+};
+
+export const getUserAction = (userId, setUser) => async (dispatch) => {
+  dispatch({
+    type: START_LOADING,
+  });
+  try {
+    const { data } = await getUser(userId);
+    setUser(data);
+  } catch (error) {
+    Promise.reject(error);
+  }
+  dispatch({
+    type: END_LOADING,
+  });
 };
 
 export const registerUser =
