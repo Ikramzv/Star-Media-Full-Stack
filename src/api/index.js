@@ -23,8 +23,8 @@ export const register = async (payload) =>
 export const getUser = async (id) => await API.get(`/users/${id}`);
 export const getUserWithQuery = async (username) =>
   await API.get(`/users?username=${username}`);
-export const getUserAllPost = async (id) =>
-  await API.get(`/users/profile/${id}`);
+export const getUserAllPost = async (id, since) =>
+  await API.get(`/users/profile/${id}?since=${since}`);
 export const getFollowings = async (id) =>
   await API.get(`/users/followings/${id}`);
 export const followUserApi = async (id) => await API.put(`/users/${id}/follow`);
