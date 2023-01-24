@@ -37,19 +37,22 @@ export const getTimelinePosts =
     dispatch({ type: END_LOADING });
   };
 
-export const getProfilePostsAction = (userId) => async (dispatch) => {
-  dispatch({ type: START_LOADING });
-  try {
-    const { data } = await getUserAllPost(userId);
-    dispatch({
-      type: SET_PROFILE_POSTS,
-      payload: data,
-    });
-  } catch (error) {
-    Promise.reject(error.response.data);
-  }
-  dispatch({ type: END_LOADING });
-};
+export const getProfilePostsAction =
+  (userId, since, setData, complete) => async (dispatch) => {
+    dispatch({ type: START_LOADING });
+    try {
+      const { data } = await getUserAllPost(userId, since);
+      if (setData && userId) setData((prev) => ({ ...prev, mainPosts: data }));
+      dispatch({
+        type: SET_PROFILE_POSTS,
+        payload: data,
+        complete,
+      });
+    } catch (error) {
+      Promise.reject(error.response.data);
+    }
+    dispatch({ type: END_LOADING });
+  };
 
 export const updatePostAction = (postId, desc) => async (dispatch) => {
   try {
