@@ -8,7 +8,7 @@ import {
   UPDATE_POST,
 } from "../actions/actionTypes";
 
-export default (state = { posts: [], postUsers: [] }, action) => {
+export default (state = { posts: [] }, action) => {
   switch (action.type) {
     case SET_TIMELINE_POSTS:
       return {
@@ -25,7 +25,9 @@ export default (state = { posts: [], postUsers: [] }, action) => {
     case SET_PROFILE_POSTS:
       return {
         ...state,
-        posts: action.payload,
+        posts: action.complete
+          ? action.payload
+          : [...state.posts, ...action.payload],
       };
     case LIKE_POST:
       return {
