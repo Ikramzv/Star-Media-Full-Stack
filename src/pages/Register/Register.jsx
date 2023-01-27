@@ -1,10 +1,10 @@
-import { Delete } from "@mui/icons-material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { END_LOADING, START_LOADING } from "../../actions/actionTypes";
 import { registerUser } from "../../actions/userAction";
 import "./register.css";
+import UserImage from "./UserImage";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ function Register() {
   });
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userProfileImage, setUserProfileImage] = useState("");
+  const [userCoverImage, setUserCoverImage] = useState("");
   const [passwordAlert, setPasswordAlert] = useState("");
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state);
@@ -30,13 +31,13 @@ function Register() {
     navigate("/login");
   };
 
-  const changeImgToUrl = (file) => {
+  const changeImgToUrl = (file, setImage) => {
     dispatch({ type: START_LOADING });
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       const result = reader.result;
-      return setUserProfileImage(result);
+      return setImage(result);
     };
     dispatch({ type: END_LOADING });
   };
@@ -59,13 +60,12 @@ function Register() {
         {
           ...formData,
           userProfileImage,
+          userCoverImage,
         },
         navigate
       )
     );
   };
-
-  useEffect(() => {}, [formData, userProfileImage, passwordAlert]);
 
   return (
     <div className="register">
@@ -155,7 +155,7 @@ function Register() {
                       </span>
                     )}
                   </div>
-                  <div className="registerFormInput">
+                  <div className="registerFormInput span_2">
                     <label htmlFor="confirm">Confirm Password :</label>
                     <input
                       type="password"
@@ -168,34 +168,22 @@ function Register() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
-                  <div className="registerFormInput userProfileImg">
-                    {userProfileImage ? (
-                      <div className="userProfileImgContainer">
-                        <img
-                          src={userProfileImage}
-                          alt=""
-                          className="formUserProfileImage"
-                        />
-                        <Delete
-                          className="userProfileImgDelete"
-                          onTransitionEnd={() => setUserProfileImage("")}
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        <label htmlFor="profileImage">
-                          Choose a profile image
-                        </label>
-                        <input
-                          type="file"
-                          id="profileImage"
-                          name="userProfileImg"
-                          accept="image/*"
-                          onChange={(e) => changeImgToUrl(e.target.files[0])}
-                        />
-                      </>
-                    )}
-                  </div>
+                  <UserImage
+                    changeImgToUrl={changeImgToUrl}
+                    setImage={setUserProfileImage}
+                    userImage={userProfileImage}
+                    text={"profile"}
+                    name={"userProfileImage"}
+                    id={"profileImage"}
+                  />
+                  <UserImage
+                    changeImgToUrl={changeImgToUrl}
+                    setImage={setUserCoverImage}
+                    userImage={userCoverImage}
+                    text={"cover"}
+                    name={"userCoverImage"}
+                    id={"coverImage"}
+                  />
                 </div>
                 <input
                   type={"submit"}

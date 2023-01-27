@@ -27,7 +27,8 @@
 
 .registerRight {
     flex: 1;
-    height: auto;
+    height: 100vh;
+    padding-block: 50px 20px;
 }
 
 .registerBox {
@@ -39,7 +40,6 @@
 }
 
 .registerBox form {
-    margin-top: 80px;
     width: 80%;
     height: 100%;
     background-color: #fff;
@@ -80,7 +80,7 @@ legend {
     flex: 2;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px 6px;
 }
 
 .registerFormInput > input {
