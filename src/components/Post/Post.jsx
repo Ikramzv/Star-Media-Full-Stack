@@ -1,28 +1,14 @@
-import { Delete, Favorite, FavoriteBorder } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deletePostAction, like } from "../../actions/postAction";
+import Comment from "./Comment";
 import Edit from "./Edit";
+import Like from "./Like";
 import "./Post.css";
-
-const Like = ({ post, user }) => {
-  const dispatch = useDispatch();
-  const likePost = () => {
-    dispatch(like(post._id, user._id));
-  };
-  return (
-    <>
-      {post.likes.some((id) => id === user?._id) ? (
-        <Favorite className="likeBtn" onClick={likePost} color="error" />
-      ) : (
-        <FavoriteBorder className="likeBtn" onClick={likePost} />
-      )}
-      <span className="likeCounter">{post.likes.length}</span>
-    </>
-  );
-};
+import Save from "./Save";
 
 const regexpUrl =
   /(http|https):\/\/([A-z]?(\.))?[A-z\d\._]{1,}\.(com|az|ru|org|co|net|tr|us)(\/[A-z\d\S]{1,})?/gi; // url
@@ -75,7 +61,6 @@ function Post({ post }) {
       dispatch(deletePostAction(post?._id, setDisabled));
     }
   };
-
   return (
     <div className="post">
       <div className="postWrapper">
@@ -118,7 +103,16 @@ function Post({ post }) {
         </figure>
         <div className="postBottom">
           <div className="postBottomLeft">
-            <Like post={post} user={user} />
+            <Like
+              item={post}
+              user={user}
+              action={like}
+              args={[post._id, user._id]}
+            />
+            <Comment post={post} user={user} />
+          </div>
+          <div className="postBottomLeft">
+            <Save post={post} user={user} />
           </div>
         </div>
       </div>

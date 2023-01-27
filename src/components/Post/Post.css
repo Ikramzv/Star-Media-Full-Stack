@@ -120,8 +120,17 @@
     gap: 8px;
 }
 
-.likeBtn {
+.postBottomLeftActions {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.postBottomLeftActions > svg {
     cursor: pointer;
+}
+
+.likeBtn {
     width: 30px;
     height: 30px;
     transition: 300ms ease all !important;
@@ -141,6 +150,15 @@
     font-size: 16px;
     color: rgb(79, 78, 78);
     cursor: pointer;
+}
+
+.save_button {
+    cursor: pointer;
+    transition: 200ms ease;
+}
+
+.save_button:hover {
+    transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
