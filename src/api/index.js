@@ -46,6 +46,22 @@ export const deletePostApi = async (id) => await API.delete(`/posts/${id}`);
 export const updatePostApi = async (postId, desc) =>
   await API.patch(`/posts/edit/${postId}`, { desc });
 
+// Comments
+
+export const deleteComment = async (commentId) =>
+  await API.delete(`/comments/${commentId}`);
+
+export const editComment = async (commentId, comment) =>
+  await API.patch(`/comments/${commentId}`, { comment });
+
+export const createComment = async (data) => await API.post(`/comments`, data); // data = { comment, postId }
+
+export const getComments = async (postId, since) =>
+  await API.get(`/comments/comment/${postId}${since ? `?since=${since}` : ""}`);
+
+export const likeComment = async (commentId) =>
+  await API.patch(`/comments/like/${commentId}`);
+
 // Conversations and messages
 
 export const getConversation = async () => await API.get(`/conversations`); // This will come based on current signed in user
