@@ -5,9 +5,10 @@ import {
   PermMedia,
   Room,
 } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { END_LOADING, START_LOADING } from "../../actions/actionTypes";
 import { createUserPost } from "../../actions/postAction";
 import "./share.css";
 
@@ -17,7 +18,7 @@ const regexpUrl =
 function Share() {
   const user = useSelector((state) => state.user.user);
   const [desc, setDesc] = useState([]);
-  const [image, setImage] = useState("");
+  const [media, setMedia] = useState("");
   const dispatch = useDispatch();
   const { id: profileId } = useParams();
 
@@ -25,11 +26,41 @@ function Share() {
     setDesc(e.target.value);
   };
 
+  const element = useRef();
+
+  const resetImage = (e) => {
+    e.preventDefault();
+    setMedia("");
+  };
+
   const imageToUrl = (file) => {
+    dispatch({ type: START_LOADING });
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setImage(reader.result);
+      console.log(reader.result);
+      const src = reader.result;
+      if (file.type.includes("video")) {
+        element.current = (
+          <>
+            <video src={src} loop autoPlay controls alt="video" />
+            <button onClick={resetImage} className="postImageDelete">
+              <Delete />
+            </button>
+          </>
+        );
+      } else {
+        element.current = (
+          <>
+            <img src={src} alt="image" />
+            <button onClick={resetImage} className="postImageDelete">
+              <Delete />
+            </button>
+          </>
+        );
+      }
+      setMedia(src);
+      dispatch({ type: END_LOADING });
     };
   };
 
@@ -40,12 +71,12 @@ function Share() {
         createUserPost(
           {
             desc,
-            img: image,
+            img: media,
           },
           user
         )
       );
-      setImage("");
+      setMedia("");
       setDesc("");
     } else {
       return alert("Description must be 1 character at least");
@@ -99,15 +130,7 @@ function Share() {
               <span className="shareOptionText">Feelings</span>
             </div>
           </div>
-          {image && (
-            <div className="shareImage">
-              <img src={image} alt="" />
-              <Delete
-                className="postImageDelete"
-                onTransitionEnd={() => setImage("")}
-              />
-            </div>
-          )}
+          {media && <div className="shareImage">{element.current}</div>}
           <button className="shareBtn" type={"submit"}>
             Share
           </button>
