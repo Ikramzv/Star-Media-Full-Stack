@@ -9,6 +9,8 @@ import Mesenger from "./pages/Messenger/Mesenger";
 import Profile from "./pages/Profile/Profile";
 import Register from "./pages/Register/Register";
 
+const buttons = document.querySelectorAll("button");
+
 function App() {
   const { user, loading } = useSelector((state) => ({
     user: state.user.user,
@@ -21,6 +23,19 @@ function App() {
       navigate("/login");
     }
   }, [user]);
+
+  useEffect(() => {
+    if (loading) {
+      buttons.forEach((btn) => {
+        btn.style.pointerEvents = "none";
+      });
+    } else {
+      buttons.forEach((btn) => {
+        btn.style.pointerEvents = "initial";
+      });
+    }
+  }, [loading]);
+
   return (
     <div style={{ overflowX: "clip" }}>
       {loading && <CircularProgress color="error" className="loading" />}
