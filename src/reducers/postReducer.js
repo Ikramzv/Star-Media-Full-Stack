@@ -1,6 +1,8 @@
 import {
   CREATE_POST,
+  DECREMENT_COMMENT_COUNTS,
   DELETE_POST,
+  INCREMENT_COMMENT_COUNTS,
   LIKE_POST,
   SET_ADDITIONAL_POSTS_TO_SHOW,
   SET_PROFILE_POSTS,
@@ -66,6 +68,30 @@ export default (state = { posts: [] }, action) => {
       return {
         ...state,
         posts: state.posts.filter((post) => post?._id !== action.payload),
+      };
+    case INCREMENT_COMMENT_COUNTS:
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === action.postId
+            ? {
+                ...post,
+                commentsCount: { count: post.commentsCount.count + 1 },
+              }
+            : post
+        ),
+      };
+    case DECREMENT_COMMENT_COUNTS:
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === action.postId
+            ? {
+                ...post,
+                commentsCount: { count: post.commentsCount.count - 1 },
+              }
+            : post
+        ),
       };
     default:
       return state;
