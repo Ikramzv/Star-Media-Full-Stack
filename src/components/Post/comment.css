@@ -1,0 +1,70 @@
+.comment_actions_container {
+    position: relative;
+    margin-left: auto;
+}
+
+.comment_actions {
+    --action-color: black;
+}
+
+.comment_action_options > button:first-child {
+    --action-color: rgb(146, 26, 50);
+}
+
+.comment_action_options > button:last-child {
+    --action-color: rgb(80, 80, 187);
+}
+
+.comment_actions, .comment_action_options > button {
+    background-color: transparent;
+    border: 1px solid var(--action-color);
+    border-radius: 8px;
+    padding: 3px 6px;
+    cursor: pointer;
+    transition: 200ms ease;
+}
+
+.comment_actions:hover , .comment_action_options > button:hover {
+    background-color: var(--action-color);
+    color: white !important;
+}
+
+.comment_action_options {
+    transform: scaleY(0);
+    transition: 150ms ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform-origin: top;
+    position: absolute;
+    left: 0;
+    top: 105%;
+    width: 100%;
+    gap: 3px;
+    background-color: white;
+}   
+
+.comment_action_options.open {
+    transform: scaleY(1);
+    z-index: 200;
+}
+
+.comment_input {
+    --comment-color: rgb(118, 118, 250);
+    font-family: 'Roboto', sans-serif;
+    border: 1px solid var(--comment-color);
+    border-radius: 6px;
+    padding: 6px 8px;
+    transition: 200ms ease;
+    display: block;
+    width: 100%;
+    font-size: 17px;
+    outline: none;
+    resize: none;
+}
+
+.comment_input:focus-visible, .comment_input:focus-visible::placeholder {
+    background: var(--comment-color);
+    color: white;
+    border: none;
+}
