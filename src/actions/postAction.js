@@ -98,16 +98,20 @@ export const like = (id, userId) => async (dispatch) => {
   }
 };
 
-export const createUserPost = (payload, user) => async (dispatch) => {
+export const createUserPost = (postData, user) => async (dispatch) => {
   dispatch({ type: START_LOADING });
   try {
-    const { data } = await createPost(payload);
+    const { data } = await createPost(postData);
+    const payload = {
+      commentsCount: {
+        count: 0,
+      },
+      ...data,
+      user,
+    };
     dispatch({
       type: CREATE_POST,
-      payload: {
-        ...data,
-        user,
-      },
+      payload,
     });
   } catch (error) {
     Promise.reject(error);
