@@ -9,19 +9,20 @@ import {
   CREATE_COMMENT,
   DELETE_COMMENT,
   EDIT_COMMENT,
-  END_LOADING,
+  END_C_LOADING,
   GET_COMMENTS,
   LIKE_COMMENT,
-  START_LOADING,
+  START_C_LOADING,
 } from "./actionTypes";
 
 export const getCommentsAction =
-  (postId, since, complete) => async (dispatch) => {
+  (postId, since, complete, firstLoading) => async (dispatch) => {
     dispatch({
-      type: START_LOADING,
+      type: START_C_LOADING,
     });
     try {
       const { data } = await getComments(postId, since);
+      if (firstLoading) firstLoading.current = false;
       dispatch({
         type: GET_COMMENTS,
         payload: data,
@@ -32,13 +33,13 @@ export const getCommentsAction =
       Promise.reject(error);
     }
     dispatch({
-      type: END_LOADING,
+      type: END_C_LOADING,
     });
   };
 
 export const createCommentAction = (commentData) => async (dispatch) => {
   dispatch({
-    type: START_LOADING,
+    type: START_C_LOADING,
   });
   try {
     const { data } = await createComment(commentData);
@@ -50,7 +51,7 @@ export const createCommentAction = (commentData) => async (dispatch) => {
     Promise.reject();
   }
   dispatch({
-    type: END_LOADING,
+    type: END_C_LOADING,
   });
 };
 
