@@ -27,9 +27,31 @@ function Share() {
   };
 
   const element = useRef();
+  const input = useRef(
+    <input
+      key={crypto.randomUUID()}
+      type={"file"}
+      id="postImageInput"
+      style={{ display: "none" }}
+      onChange={(e) => {
+        console.log(e);
+        imageToUrl(e.target.files[0]);
+      }}
+    />
+  );
+
+  const recreateInput = () => {
+    const props = input.current.props;
+    const newInput = React.createElement(input.current.type, {
+      key: crypto.randomUUID(),
+      ...props,
+    });
+    input.current = newInput;
+  };
 
   const resetImage = (e) => {
     e.preventDefault();
+    recreateInput();
     setMedia("");
   };
 
@@ -37,8 +59,8 @@ function Share() {
     dispatch({ type: START_LOADING });
     const reader = new FileReader();
     reader.readAsDataURL(file);
+    console.log(reader.result, file);
     reader.onloadend = () => {
-      console.log(reader.result);
       const src = reader.result;
       if (file.type.includes("video")) {
         element.current = (
@@ -110,12 +132,7 @@ function Share() {
               <label className="shareOptionText" htmlFor="postImageInput">
                 Photo or Video
               </label>
-              <input
-                type={"file"}
-                id="postImageInput"
-                style={{ display: "none" }}
-                onChange={(e) => imageToUrl(e.target.files[0])}
-              />
+              {input.current}
             </div>
             <div className="shareOption">
               <Label htmlColor="blue" className="shareIcon" />
