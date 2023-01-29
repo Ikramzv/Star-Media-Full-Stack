@@ -64,10 +64,10 @@ function ChatInput({ currentChat, setOnlineFriends }) {
   }, [user?._id]);
 
   useEffect(() => {
-    socketMessage &&
-      currentChat?.members.includes(socketMessage.sender) &&
+    if (socketMessage) {
       // friend display
       dispatch(sendMessageAction(socketMessage, "socket_message"));
+    }
   }, [socketMessage, currentChat]);
 
   return (
