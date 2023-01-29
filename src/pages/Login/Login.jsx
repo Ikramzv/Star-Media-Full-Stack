@@ -81,7 +81,12 @@ function Login() {
                     />
                   </div>
                 </div>
-                <input type={"submit"} value="LOGIN" onClick={handleSubmit} />
+                <input
+                  type={"submit"}
+                  value="LOGIN"
+                  disabled={loading}
+                  onClick={handleSubmit}
+                />
               </fieldset>
               <span className="loginRegisterText">
                 Do you have account ? If not it is time to <b>register</b> :{" "}
