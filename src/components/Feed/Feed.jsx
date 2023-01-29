@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import Modal from "../../Modal/Modal";
 
 import Post from "../Post/Post";
 import Share from "../Share/Share";
@@ -16,6 +17,7 @@ function Feed({ isProfilePage, profileUser }) {
         {posts.map((post) => (
           <Post post={post} key={post._id} />
         ))}
+        <Modal />
       </Wrapper>
     </div>
   );
