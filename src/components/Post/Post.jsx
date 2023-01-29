@@ -107,7 +107,7 @@ function Post({ post }) {
               item={post}
               user={user}
               action={like}
-              args={[post._id, user._id]}
+              args={[post?._id, user?._id]}
             />
             <Comment post={post} user={user} />
           </div>
