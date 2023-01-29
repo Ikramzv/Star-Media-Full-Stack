@@ -25,7 +25,7 @@ function Conversation({ conversation, setBar }) {
   return (
     <>
       <div onClick={handleClick}>
-        <InteractiveLi>
+        <InteractiveLi c={conversation}>
           <div className="chatListItem">
             <img
               src={
