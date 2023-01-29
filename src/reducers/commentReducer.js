@@ -7,12 +7,12 @@ import {
   LIKE_COMMENT,
 } from "../actions/actionTypes";
 
-const iniitalState = {
+const initialState = {
   comments: [],
   cachedComments: {},
 };
 
-export default (state = iniitalState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case GET_COMMENTS:
       const comments = action.complete
