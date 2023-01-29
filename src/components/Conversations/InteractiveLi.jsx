@@ -1,26 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 
-function InteractiveLi({ children }) {
-  const [active, setActive] = useState(false);
+function InteractiveLi({ children, c }) {
   const li = useRef();
+  const { id } = useParams();
   useEffect(() => {
-    const filter = Array.from(document.querySelectorAll(".chatList")).filter(
-      (li) => li.classList.contains("active")
-    );
-
-    if (filter.length > 1) {
-      filter
-        .filter((list) => list !== li.current)
-        .forEach((list) => list.classList.remove("active"));
+    const uname = li.current.querySelector("div strong").innerHTML;
+    if (c?._id === id && c.receiver.username === uname) {
+      li.current.click();
     }
-  }, [active]);
+  }, [id]);
+
   return (
     <li
       className={`chatList`}
       ref={li}
       onClick={() => {
+        document.querySelectorAll(".chatList").forEach((li) => {
+          li.classList.remove("active");
+        });
         li.current.classList.add("active");
-        setActive(!active);
       }}
     >
       {children}
