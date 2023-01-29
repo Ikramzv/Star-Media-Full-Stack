@@ -20,3 +20,14 @@ body {
     font-family: 'Roboto', sans-serif;
     overflow-x: hidden;
 }
+
+.loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 50%;
+    z-index: 100;
+}
