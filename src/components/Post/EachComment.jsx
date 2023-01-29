@@ -14,7 +14,7 @@ import {
 } from "../../actions/commentAction";
 import Like from "./Like";
 
-function EachComment({ comment, user, post }) {
+function EachComment({ comment, user, postId }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ function EachComment({ comment, user, post }) {
     setOpen(false);
     const promp = prompt("", comment.comment);
     if (!promp || comment.comment === promp) return;
-    dispatch(editCommentAction(comment?._id, promp, post?._id));
+    dispatch(editCommentAction(comment?._id, promp, postId));
   };
 
   const handleDelete = () => {
@@ -39,10 +39,10 @@ function EachComment({ comment, user, post }) {
     );
     if (!promp) return;
     if (promp !== "yes") return;
-    dispatch(deleteCommentAction(comment?._id, post?._id));
+    dispatch(deleteCommentAction(comment?._id, postId));
     dispatch({
       type: DECREMENT_COMMENT_COUNTS,
-      postId: post?._id,
+      postId: postId,
     });
   };
 
@@ -62,7 +62,7 @@ function EachComment({ comment, user, post }) {
             width: "30px",
             height: "30px",
           }}
-          src={user?.userProfileImage}
+          src={user?.userProfileImage || "/user.webp"}
           onClick={navigateToProfile}
         />
         <Typography
@@ -101,7 +101,7 @@ function EachComment({ comment, user, post }) {
         item={comment}
         user={user}
         action={likeCommentAction}
-        args={[comment?._id, user?._id, post?._id]}
+        args={[comment?._id, user?._id, postId]}
       />
     </Stack>
   );

@@ -5,7 +5,7 @@ import { getCommentsAction } from "../../actions/commentAction";
 import useDebounce from "../../hooks/useDebounce";
 import useUpdateEffect from "../../hooks/useUpdateEffect";
 
-function CommentWrapper({ children, post }) {
+function CommentWrapper({ children, postId }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("lg"));
   const [scrollTop, setScrollTop] = useState(0);
@@ -26,7 +26,7 @@ function CommentWrapper({ children, post }) {
     if (!comments.length) return;
     if (scrollTop + limit > actualHeight && !loading) {
       since.current = comments.at(-1)?.createdAt;
-      dispatch(getCommentsAction(post?._id, since.current));
+      dispatch(getCommentsAction(postId, since.current));
     }
   };
 

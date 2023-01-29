@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { INCREMENT_COMMENT_COUNTS } from "../../actions/actionTypes";
 import { createCommentAction } from "../../actions/commentAction";
 
-function CommentForm({ user, post }) {
+function CommentForm({ user, postId }) {
   const [value, setValue] = useState("");
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ function CommentForm({ user, post }) {
       likes: [],
       createdAt: new Date().toISOString(),
       comment: value,
-      postId: post?._id,
+      postId: postId,
       user: {
         username: user?.username,
         userProfileImage: user?.userProfileImage,
@@ -28,7 +28,7 @@ function CommentForm({ user, post }) {
     dispatch(createCommentAction(data));
     dispatch({
       type: INCREMENT_COMMENT_COUNTS,
-      postId: post?._id,
+      postId: postId,
     });
     setValue("");
   };
