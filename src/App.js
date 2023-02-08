@@ -2,6 +2,7 @@ import { CircularProgress } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { socket } from "./constants";
 import HomeLayout from "./Layout/HomeLayout";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -19,6 +20,9 @@ function App() {
   useEffect(() => {
     if (!user) {
       navigate("/login");
+      socket.close();
+    } else {
+      socket.connect();
     }
   }, [user]);
 
