@@ -1,6 +1,8 @@
 import axios from "axios";
 import SERVER_URL from "../constants";
 
+// transition to RTK
+
 const API = axios.create({
   baseURL: SERVER_URL,
 });
