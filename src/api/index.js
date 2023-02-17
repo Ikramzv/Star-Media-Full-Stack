@@ -1,5 +1,36 @@
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import SERVER_URL from "../constants";
+import { setLoading } from "../reducers/loadingReducer";
+
+function baseQuery() {
+  return async (args, api, extraOptions) => {
+    const headers = {};
+    if (localStorage.getItem("user")) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      headers["authorization"] = `Bearer ${user.accessToken}`;
+    }
+    const checkPost = /posts/i;
+    if (api.endpoint.match(checkPost)) api.dispatch(setLoading(true));
+    const result = await fetchBaseQuery({ baseUrl: SERVER_URL, headers })(
+      args,
+      api,
+      extraOptions
+    );
+    if (api.endpoint.match(checkPost)) api.dispatch(setLoading(false));
+
+    return result;
+  };
+}
+
+export const api = createApi({
+  baseQuery: baseQuery(),
+  tagTypes: ["Post"],
+  endpoints: (builder) => ({}),
+});
+
+export const { injectEndpoints, enhanceEndpoints } = api;
+export const { updateQueryData } = api.util;
 
 // transition to RTK
 
