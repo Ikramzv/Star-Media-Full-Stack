@@ -11,12 +11,8 @@ import Profile from "./pages/Profile/Profile";
 import Register from "./pages/Register/Register";
 
 function App() {
-  const { user, loading } = useSelector((state) => ({
-    user: state.user.user,
-    loading: state.loading,
-  }));
+  const { user, loading } = useSelector((state) => state);
   const navigate = useNavigate();
-
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -25,7 +21,6 @@ function App() {
       socket.connect();
     }
   }, [user]);
-
   return (
     <div style={{ overflowX: "clip" }}>
       {loading && <CircularProgress color="error" className="loading" />}
