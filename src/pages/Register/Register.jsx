@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { END_LOADING, START_LOADING } from "../../actions/actionTypes";
-import { registerUser } from "../../actions/userAction";
+import { injectMutation } from "../../api/utils";
+import Buttons from "../../common/Buttons";
+import { setUser } from "../../reducers/userReducer";
 import "./register.css";
 import UserImage from "./UserImage";
 
@@ -19,30 +20,39 @@ function Register() {
   const [userCoverImage, setUserCoverImage] = useState("");
   const [passwordAlert, setPasswordAlert] = useState("");
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state);
+  const navigate = useNavigate();
+  const { useRegisterMutation } = useMemo(() => {
+    return injectMutation(
+      (body) => ({
+        body,
+        method: "POST",
+        url: "/auth/register",
+      }),
+      "register"
+    );
+  }, []);
+
+  const [register, { isLoading }] = useRegisterMutation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const navigate = useNavigate();
   const handleClick = (e) => {
     e.preventDefault();
     navigate("/login");
   };
 
   const changeImgToUrl = (file, setImage) => {
-    dispatch({ type: START_LOADING });
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       const result = reader.result;
       return setImage(result);
     };
-    dispatch({ type: END_LOADING });
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (Object.entries(formData).find(([key, value]) => value === "")) {
       return alert("Fields mustn't be empty");
@@ -54,18 +64,43 @@ function Register() {
     if (formData.password.length < 8) {
       return setPasswordAlert("Password length must be 8 at least");
     }
-
-    dispatch(
-      registerUser(
-        {
-          ...formData,
-          userProfileImage,
-          userCoverImage,
-        },
-        navigate
-      )
-    );
+    const body = {
+      ...formData,
+      userProfileImage,
+      userCoverImage,
+    };
+    try {
+      const data = await register(body).unwrap();
+      dispatch(setUser(data));
+      navigate("/");
+    } catch (error) {
+      navigate("/register");
+    }
   };
+
+  const images = useMemo(
+    () => (
+      <>
+        <UserImage
+          changeImgToUrl={changeImgToUrl}
+          setImage={setUserProfileImage}
+          userImage={userProfileImage}
+          text={"profile"}
+          name={"userProfileImage"}
+          id={"profileImage"}
+        />
+        <UserImage
+          changeImgToUrl={changeImgToUrl}
+          setImage={setUserCoverImage}
+          userImage={userCoverImage}
+          text={"cover"}
+          name={"userCoverImage"}
+          id={"coverImage"}
+        />
+      </>
+    ),
+    [userProfileImage, userCoverImage]
+  );
 
   return (
     <div className="register">
@@ -168,40 +203,27 @@ function Register() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                   </div>
-                  <UserImage
-                    changeImgToUrl={changeImgToUrl}
-                    setImage={setUserProfileImage}
-                    userImage={userProfileImage}
-                    text={"profile"}
-                    name={"userProfileImage"}
-                    id={"profileImage"}
-                  />
-                  <UserImage
-                    changeImgToUrl={changeImgToUrl}
-                    setImage={setUserCoverImage}
-                    userImage={userCoverImage}
-                    text={"cover"}
-                    name={"userCoverImage"}
-                    id={"coverImage"}
-                  />
+                  {images}
                 </div>
-                <input
+                <Buttons
+                  classname={""}
+                  isLoading={isLoading}
+                  handleClick={handleRegister}
+                  text="Register"
                   type={"submit"}
-                  value="REGISTER"
-                  onClick={handleRegister}
                 />
                 <br />
                 <span className="registerRegisterText">
                   Back to <b>login</b> :{" "}
                 </span>
                 <br />
-                <button
-                  className="backToLogin"
-                  disabled={loading}
-                  onClick={handleClick}
-                >
-                  Back
-                </button>
+                <Buttons
+                  classname={"backToLogin"}
+                  isLoading={isLoading}
+                  handleClick={handleClick}
+                  text="Back"
+                  type={"button"}
+                />
               </fieldset>
             </form>
           </div>

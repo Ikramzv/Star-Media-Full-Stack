@@ -119,23 +119,6 @@ legend {
     grid-column: span 2;
 }
 
-fieldset input[type='submit'], .backToLogin {
-    padding: 10px 20px;
-    background-color: crimson;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    width: 200px;
-    margin-block: 20px;
-    transition: 300ms ease transform;
-    cursor: pointer;
-}
-
-fieldset input[type='submit']:active , .backToLogin:active {
-    transform: scale(0.6);
-}
-
 .backToLogin {
     margin-block: 10px;
 }

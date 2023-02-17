@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "../../actions/userAction";
+import { injectMutation } from "../../api/utils";
+import Buttons from "../../common/Buttons";
+import { setUser } from "../../reducers/userReducer";
 import "./login.css";
 
 function Login() {
@@ -9,12 +11,20 @@ function Login() {
     email: "",
     password: "",
   });
+  const { useLoginMutation } = useMemo(() => {
+    return injectMutation(
+      (body) => ({
+        body,
+        url: "/auth/login",
+        method: "POST",
+      }),
+      "login"
+    );
+  }, []);
+  const [login, { isLoading }] = useLoginMutation({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    loading,
-    user: { user },
-  } = useSelector((state) => state);
+  const { user } = useSelector((state) => state);
 
   const handleChange = (e) => {
     setFormData({
@@ -23,11 +33,18 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData) {
-      dispatch(loginUser(formData, navigate));
-    }
+    if (Object.values(formData).every((v) => v.length)) {
+      try {
+        const data = await login(formData).unwrap();
+        dispatch(setUser(data));
+        navigate("/");
+      } catch (error) {
+        Promise.reject(error);
+        alert(error.data);
+      }
+    } else alert("Empty fields");
   };
 
   const handleClick = (e) => {
@@ -81,24 +98,25 @@ function Login() {
                     />
                   </div>
                 </div>
-                <input
-                  type={"submit"}
-                  value="LOGIN"
-                  disabled={loading}
-                  onClick={handleSubmit}
+                <Buttons
+                  classname={""}
+                  handleClick={handleSubmit}
+                  isLoading={isLoading}
+                  text={"Login"}
+                  type="submit"
                 />
               </fieldset>
               <span className="loginRegisterText">
                 Do you have account ? If not it is time to <b>register</b> :{" "}
               </span>
               <br />
-              <button
-                className="loginRegisterBtn"
-                disabled={loading}
-                onClick={handleClick}
-              >
-                Register
-              </button>
+              <Buttons
+                classname={"loginRegisterBtn"}
+                handleClick={handleClick}
+                isLoading={isLoading}
+                text={"Register"}
+                type="button"
+              />
             </form>
           </div>
         </div>

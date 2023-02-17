@@ -103,7 +103,7 @@ legend {
     font-weight: bold;
 }
 
-fieldset input[type='submit'], .loginRegisterBtn {
+fieldset button[type='submit'], .loginRegisterBtn, .backToLogin {
     padding: 10px 20px;
     background-color: crimson;
     color: white;
@@ -116,7 +116,12 @@ fieldset input[type='submit'], .loginRegisterBtn {
     cursor: pointer;
 }
 
-fieldset input[type='submit']:active , .loginRegisterBtn:active {
+fieldset button[type='submit'].load, .loginRegisterBtn.load, .backToLogin.load {
+    background-color: white;
+    border: 1px solid crimson;
+}
+
+fieldset button[type='submit']:active , .loginRegisterBtn:active, .backToLogin:active {
     transform: scale(0.6);
 }
 
