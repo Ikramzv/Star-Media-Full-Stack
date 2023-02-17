@@ -8,7 +8,7 @@ import { socket } from "../../constants";
 import "./home.css";
 
 function Home() {
-  const { user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state);
   const navigate = useNavigate();
   const [onlineFriends, setOnlineFriends] = useState([]);
 
