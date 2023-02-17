@@ -1,44 +1,62 @@
 import { Add, Remove } from "@mui/icons-material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getUserAction } from "../../actions/userAction";
-import { followUserApi, unfollowUserApi } from "../../api";
+import {
+  api,
+  followUserApi,
+  injectEndpoints,
+  unfollowUserApi,
+} from "../../api";
 import Feed from "../../components/Feed/Feed";
 import Rightbar from "../../components/Rightbar/Rightbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import "./profile.css";
 
 function Profile() {
-  const [user, setUser] = useState({});
   const { id } = useParams();
-  const currentUser = useSelector((state) => state.user.user);
+  const { useGetUserQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getUser: builder.query({
+          query: (id) => `/users/${id}`,
+        }),
+      }),
+    });
+  }, [id]);
+
+  const { data: user } = useGetUserQuery(id);
+  const currentUser = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   const isFollows = useMemo(
-    () => user.followers?.includes(currentUser._id),
+    () => user?.followers?.includes(currentUser._id),
     [user?.followers?.length]
   );
 
   const followUser = async () => {
-    if (!user.followers.some((id) => id === currentUser?._id)) {
-      setUser({
-        ...user,
-        followers: [...user.followers, currentUser?._id],
-      });
+    if (!user?.followers.some((id) => id === currentUser?._id)) {
+      dispatch(
+        api.util.updateQueryData("getUser", id, (user) => {
+          return {
+            ...user,
+            followers: [...user.followers, currentUser?._id],
+          };
+        })
+      );
       await followUserApi(user?._id);
     } else {
-      setUser({
-        ...user,
-        followers: user.followers.filter((id) => id !== currentUser?._id),
-      });
+      dispatch(
+        api.util.updateQueryData("getUser", id, (user) => {
+          return {
+            ...user,
+            followers: user?.followers.filter((id) => id !== currentUser?._id),
+          };
+        })
+      );
       await unfollowUserApi(user?._id);
     }
   };
-
-  useEffect(() => {
-    dispatch(getUserAction(id, setUser));
-  }, [id]);
 
   return (
     <>
@@ -64,7 +82,7 @@ function Profile() {
               <h4 className="profileInfoName">{user?.username}</h4>
               <div className="profileInfoStatistics">
                 <h5 className="profileInfoFollowers">
-                  {user.followers?.length} Followers
+                  {user?.followers?.length} Followers
                 </h5>
                 <h5 className="profileInfoFollowings">
                   {user?.followings?.length} Followings
@@ -82,7 +100,7 @@ function Profile() {
             </div>
           </div>
           <div className="profileRightBottom">
-            <Feed isProfilePage profileUser={user} />
+            <Feed profileId={id} profileUser={user} />
             <Rightbar user={user} />
           </div>
         </div>
