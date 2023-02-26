@@ -1,21 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getUser } from "../../api";
+import { injectEndpoints } from "../../api";
 import "./ChatOnline.css";
 
 function ChatOnline({ online, setBar }) {
-  const [friend, setFriend] = useState(null);
+  const user = useSelector((state) => state.user);
   const navigate = useNavigate();
-  useEffect(() => {
-    async function getOnline() {
-      const { data } = await getUser(online.userId);
-      setFriend(data);
-    }
-    getOnline();
+
+  const { useGetUserQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getUser: builder.query({
+          query: (id) => `/users/${id}`,
+        }),
+      }),
+    });
   }, []);
+
+  const { data: friend } = useGetUserQuery(online.userId, {
+    skip: online.userId === user?._id, // not sending request if it is currentUser
+  });
+
+  if (online.userId === user?._id) return "";
+
   return (
     <div className="chatOnline">
-      <div className="chatOnlineFriend">
+      <div
+        className="chatOnlineFriend"
+        onClick={() => {
+          setBar("close");
+          navigate(`/profile/${online.userId}`);
+        }}
+      >
         <div className="chatOnlineImgContainer">
           <img
             src={
@@ -23,10 +40,6 @@ function ChatOnline({ online, setBar }) {
             }
             alt=""
             className="chatOnlineImg"
-            onClick={() => {
-              setBar("close");
-              navigate(`/profile/${online.userId}`);
-            }}
           />
           <div className="chatOnlineBadge"></div>
         </div>
