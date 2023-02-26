@@ -26,14 +26,129 @@
 .sidebarWrapper {
     height: 100%;
     width: 100%;
-    padding: 20px;
+    padding: 20px 12px;
     overflow-y: auto;
 }
+
+.sidebarWrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* MODE SWITCHER */
+
+.mode-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+.mode-switcher-container {
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border: 1px solid white;
+}
+
+.mode-switcher-container:has( .mode-switcher-button:checked) {
+    border-color: black;
+}
+
+.mode-switcher-button {
+    position: absolute;
+    appearance: none;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.mode-switcher-cover {
+    position: absolute;
+    inset: 0;
+    background-color: black;
+    clip-path: inset(0px);
+    transition: 250ms ease clip-path;
+}
+
+.mode-switcher-button:checked + .mode-switcher-cover {
+    clip-path: inset(0px 0px 0px 100%);
+}
+
+.mode-switcher-container:has( .mode-switcher-button:checked) .mode-switcher-slider {
+    left: calc(100% - 27px);
+    background: radial-gradient(ellipse farthest-corner at 33% 100%, rgb(35, 31, 32) 42%, rgb(161, 159, 160) 60%);
+    background-size: 150% 100%;
+    border: 3px solid rgb(29, 27, 28);
+    border-radius: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    background-color: black;
+}
+
+.mode-switcher-slider {
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 25px;
+    width: 25px;
+    border-radius: 100%;
+
+    background-image: url("https://cdn.mos.cms.futurecdn.net/adLnFowUSH3CmRgGBdQ6yU.jpg");
+    background-size: cover;
+    background-position: center;
+    /* background-color: white; */
+
+    transition: 500ms cubic-bezier(0.165, 0.84, 0.44, 1) , 200ms ease background-color 125ms;
+}
+
+/* .sun {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-image: url("https://cdn.mos.cms.futurecdn.net/adLnFowUSH3CmRgGBdQ6yU.jpg");
+    background-size: cover;
+    background-position: center;
+    transition: 200ms ease;
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+.moon {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: radial-gradient(ellipse farthest-corner at 33% 100%, rgb(35, 31, 32) 42%, rgb(161, 159, 160) 60%);
+    background-size: 150% 100%;
+    border: 3px solid rgb(29, 27, 28);
+    border-radius: 50%;
+    transition: 200ms ease;
+    transform: translateY(100%);
+    opacity: 0;
+} */
+
+.sidebarWrapper:has( .mode-switcher .mode-switcher-container .mode-switcher-button:checked) .sun {
+    transform: translateY(100%);
+    opacity: 0;
+}
+.sidebarWrapper:has( .mode-switcher-button:checked) .moon {
+    transform: translateY(0%);
+    rotate: 90deg 0;
+    opacity: 1;
+}
+
+/* SIDEBAR LIST */
 
 .sidebarList {
     padding: 0;
     margin: 0;
     list-style: none;
+    overflow-y: auto;
+    height: 30vh;
 }
 
 .sidebarListItem {
@@ -70,6 +185,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-y: auto;
+    max-height: 35vh;
 }
 
 .sidebarFriend {
@@ -103,6 +220,8 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    overflow-y: auto;
+    height: 50vh;
 }
 
 .searchedFriendList {
@@ -112,13 +231,18 @@
     right: 0;
     top: 0;
     z-index: 10000;
-    animation: list 1s ease;
-    max-height: 450px;
+    height: 450px;
     box-shadow: 0 3px 5px 0 black;
     border-radius: 6px;
     overflow-x: hidden;
     overflow-y: auto;
     transition: 200ms ease;
+    scale: 0;
+    transform-origin: top left;
+}
+
+.searchedFriendList.active {
+    scale: 1 0;
 }
 
 .searchedFriendList::-webkit-scrollbar {
@@ -153,17 +277,6 @@
     height: 50px;
     object-fit: cover;
     border-radius: 50%;
-}
-
-@keyframes list {
-    0% {
-        box-shadow: none;
-        max-height: 0px;
-    }
-    100% {
-        max-height: 450px;
-        box-shadow: 0 3px 5px 0 black;
-    }
 }
 
 @media (max-width: 768px) {
@@ -233,6 +346,7 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        background-color: white;
     }
 
     .hamburger .bar{
