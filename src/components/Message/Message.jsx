@@ -1,17 +1,16 @@
 import moment from "moment";
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import withStore from "../../hocs/withStore";
 import "./message.css";
 
-function Message({ message }) {
-  const currentUser = useSelector((state) => state.user.user);
-  const { messages } = useSelector((state) => state.messages);
+function Message({ message, state }) {
+  const { user: currentUser } = useMemo(() => state, Object.values(state));
   const navigate = useNavigate();
   const user = useMemo(() => {
     if (message.sender === currentUser?._id) return currentUser;
     else return message.receiver;
-  }, [messages.length, message]);
+  }, [message]);
 
   return (
     <div className={`message ${currentUser?._id === message.sender && "own"}`}>
@@ -31,4 +30,4 @@ function Message({ message }) {
   );
 }
 
-export default Message;
+export default withStore(Message, ["messages", "user"]);
