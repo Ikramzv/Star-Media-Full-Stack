@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { injectMutation } from "../../api/utils";
 import Buttons from "../../common/Buttons";
-import { setUser } from "../../reducers/userReducer";
+import { setUser } from "../../slices/userReducer";
 import "./login.css";
 
 function Login() {
