@@ -94,26 +94,41 @@
 .rightbarFollowings {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 5px;
 }
 
 .rightbarFollowing {
     display: flex;
     align-items: center;
+    position: relative;
     gap: 10px;
-    background: linear-gradient(to right , #fff , #aaa , #bbb , transparent);
     cursor: pointer;
-    transition: 500ms ease box-shadow;
-    border-radius: 100px;
+    padding: 10px 20px;
+    transition: 100ms ease scale;
 }
 
-.rightbarFollowing:hover {
-    box-shadow: 0 3px 2px 0 black;
+.rightbarFollowing::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    background-color: crimson;
+    height: 1px;
+    transition: 250ms ease;
+}
+
+.rightbarFollowing:active {
+    scale: 95%;
+}
+
+.rightbarFollowing:hover::after {
+    width: 100%;
 }
 
 .rightbarFollowingImg {
-    width: 50px;
-    height: 50px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     object-fit: cover;
     margin-block: -8px;
