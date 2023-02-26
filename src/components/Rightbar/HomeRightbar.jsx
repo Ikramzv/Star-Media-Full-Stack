@@ -1,22 +1,28 @@
 import React from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import Online from "../Online/Online";
 
-const HomeRightbar = ({ onlineFriends, setBar }) => {
+const HomeRightbar = ({ setBar }) => {
+  const onlineFriends = useSelector(
+    (state) => state.onlineFriends,
+    shallowEqual
+  );
+
   return (
     <>
-      <div className="birthdayContainer">
-        <img src="/logo.png" alt="" className="birthdayImg" />
-        <span className="birthdayText">
-          {" "}
-          <b>Pola Faster</b> and <b>3 other friends</b> have a birthday. today
-        </span>
-      </div>
-      <img src="/group.webp" alt="" className="rightbarAd" />
       <h4 className="rightbarTitle">Online friends</h4>
       <ul className="rightbarFriendList">
-        {onlineFriends.map((online, i) => (
-          <Online onlineFriends={online} key={i} setBar={setBar} />
-        ))}
+        {onlineFriends?.length > 1 ? (
+          onlineFriends.map((online, i) => (
+            <Online onlineFriend={online} key={i} setBar={setBar} />
+          ))
+        ) : (
+          <div>
+            <p style={{ fontSize: "14px", color: "gray" }}>
+              No one is online for now ..
+            </p>
+          </div>
+        )}
       </ul>
     </>
   );
