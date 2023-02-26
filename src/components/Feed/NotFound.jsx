@@ -1,11 +1,15 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useMemo } from "react";
+import withStore from "../../hocs/withStore";
 
-function NotFound({ incomingData, setShownPosts, shownPosts, profileUser }) {
-  const { posts, currentUser } = useSelector((state) => ({
-    posts: state.posts.posts,
-    currentUser: state.user.user,
-  }));
+function NotFound({
+  incomingData,
+  setShownPosts,
+  shownPosts,
+  profileUser,
+  posts,
+  state,
+}) {
+  const { user } = useMemo(() => state, Object.values(state));
   const handleClick = (e) => {
     setShownPosts("additionalPosts");
   };
@@ -13,14 +17,14 @@ function NotFound({ incomingData, setShownPosts, shownPosts, profileUser }) {
   if (profileUser?._id) {
     return !incomingData.mainPosts.length < 5 ? (
       !posts.length ? (
-        profileUser?._id !== currentUser?._id ? (
+        profileUser?._id !== user?._id ? (
           <div className="additional">
             <h4>{profileUser.username}</h4>
             <p>hasn't already shared post yet !</p>
           </div>
         ) : (
           <div className="additional">
-            <h4>{currentUser?.username}</h4>
+            <h4>{user?.username}</h4>
             <p>You haven't already shared post yet !</p>
             <h4>
               There are no posts , anyway. Maybe do you want to share a post ?{" "}
@@ -28,13 +32,15 @@ function NotFound({ incomingData, setShownPosts, shownPosts, profileUser }) {
           </div>
         )
       ) : (
-        <div className="additional">
-          <button
-            onClick={() => window.scrollTo({ behavior: "smooth", top: 0 })}
-          >
-            Go to top
-          </button>
-        </div>
+        (posts.length % 5 > 0 || incomingData.mainPosts.length < 5) && (
+          <div className="additional">
+            <button
+              onClick={() => window.scrollTo({ behavior: "smooth", top: 0 })}
+            >
+              Go to top
+            </button>
+          </div>
+        )
       )
     ) : null;
   }
@@ -72,4 +78,4 @@ function NotFound({ incomingData, setShownPosts, shownPosts, profileUser }) {
   );
 }
 
-export default React.memo(NotFound);
+export default withStore(NotFound, ["user"]);

@@ -1,59 +1,85 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getAdditionalPostsToShow,
-  getProfilePostsAction,
-  getTimelinePosts,
-} from "../../actions/postAction";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import withStore from "../../hocs/withStore";
 import useDebounce from "../../hooks/useDebounce";
 import useUpdateEffect from "../../hooks/useUpdateEffect";
 import NotFound from "./NotFound";
+
+let fetchFromNow = true;
 
 function figureOutSince(shownPosts, posts, since) {
   if (shownPosts === "mainPosts") {
     return posts.at(-1)?.createdAt;
   }
-  if (since.current === null && shownPosts === "additionalPosts") {
+  if (
+    since.current === null &&
+    shownPosts === "additionalPosts" &&
+    fetchFromNow
+  ) {
+    fetchFromNow = false;
     return new Date().toISOString();
   } else if (shownPosts === "additionalPosts") {
     return posts.at(-1)?.createdAt;
   }
 }
 
-function Wrapper({ isProfile, posts, children }) {
+let pageState = "mainPosts";
+
+function Wrapper({
+  profileUser,
+  posts,
+  children,
+  loadPosts,
+  loadAdditionalPosts,
+  state,
+}) {
   const wrapperRef = useRef(null);
-  const dispatch = useDispatch();
-  const loading = useSelector((state) => state.loading);
-  const [shownPosts, setShownPosts] = useState("mainPosts");
+  const profileId = useMemo(() => profileUser?._id, [profileUser]);
+  const loading = useMemo(() => state.loading, [state.loading]);
+  const [shownPosts, setShownPosts] = useState(
+    profileId ? "mainPosts" : pageState
+  );
   const [scrollY, setScrollY] = useState(0);
   const [incomingData, setIncomingData] = useState({
-    mainPosts: new Array(5),
-    additionalPosts: new Array(5),
+    mainPosts:
+      profileId || pageState !== "additionalPosts" // If current user is on profile page or pageState hasn't been set to additionalPosts so far , it means that it still points to mainPosts otherwise additionalPosts must be fetched
+        ? new Array(posts.length % 5 > 0 ? posts.length % 5 : 5) // If there were posts previosly , then set the incoming data to posts.length so that there won't more fetch as of now
+        : [],
+    additionalPosts: new Array(posts.length % 5 > 0 ? posts.length % 5 : 5),
   });
-
   const debouncedScrollY = useDebounce(scrollY, 250);
+  useEffect(() => {
+    if (profileId) return;
+    if (shownPosts === "additionalPosts") pageState = "additionalPosts";
+  }, [profileId, shownPosts]);
 
-  let since = useRef(null);
+  const since = useRef(null);
 
-  const fetchPosts = ({ isProfilePage, profileUser }) => {
+  const fetchPosts = async (profileId) => {
     since.current = figureOutSince(shownPosts, posts, since);
+    if (typeof since.current === "undefined") return;
     const container = wrapperRef.current;
     const limit = window.innerHeight + window.scrollY + 1200;
     if (limit > container?.offsetHeight) {
       if (incomingData[shownPosts].length >= 5 && !loading) {
-        if (isProfilePage) {
-          dispatch(
-            getProfilePostsAction(
-              profileUser._id,
-              since.current,
-              setIncomingData
-            )
-          );
+        if (profileId) {
+          const data = await loadPosts({
+            since: since.current,
+            profileId,
+          }).unwrap();
+          setIncomingData((prev) => ({ ...prev, mainPosts: data }));
         } else {
           if (shownPosts === "mainPosts") {
-            dispatch(getTimelinePosts(since.current, setIncomingData));
+            const data = await loadPosts(
+              { since: since.current },
+              true
+            ).unwrap();
+            setIncomingData((prev) => ({ ...prev, mainPosts: data }));
           } else {
-            dispatch(getAdditionalPostsToShow(since.current, setIncomingData));
+            const data = await loadAdditionalPosts(
+              since.current,
+              true
+            ).unwrap();
+            setIncomingData((prev) => ({ ...prev, additionalPosts: data }));
           }
         }
       }
@@ -63,14 +89,14 @@ function Wrapper({ isProfile, posts, children }) {
   useEffect(() => {
     if (shownPosts === "additionalPosts") {
       since.current = null;
-      fetchPosts({});
+      fetchPosts(null);
     }
   }, [shownPosts]);
 
   useUpdateEffect(() => {
-    if (isProfile.isProfilePage) fetchPosts(isProfile);
-    else fetchPosts({});
-  }, [debouncedScrollY, isProfile.profileUser?._id]);
+    if (profileId) fetchPosts(profileId);
+    else fetchPosts(null);
+  }, [debouncedScrollY, profileId]);
 
   useEffect(() => {
     const handleOnScroll = (e) => {
@@ -84,31 +110,6 @@ function Wrapper({ isProfile, posts, children }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (!loading) {
-      // when home page have been visited from another route such as /profile ,
-      // I am saying that fetch home page posts remove profile posts from state by signing completePosts = "complete"
-      let completePosts;
-      if (posts.length) {
-        completePosts = "complete";
-        since.current = new Date().toISOString();
-      }
-      const sinc = since.current ? since.current : undefined;
-      if (isProfile.isProfilePage) {
-        dispatch(
-          getProfilePostsAction(
-            isProfile.profileUser._id,
-            since.current,
-            setIncomingData,
-            completePosts
-          )
-        );
-      } else {
-        dispatch(getTimelinePosts(sinc, setIncomingData, completePosts));
-      }
-    }
-  }, []);
-
   return (
     <div ref={wrapperRef} className="feedWrapper">
       {children}
@@ -117,11 +118,12 @@ function Wrapper({ isProfile, posts, children }) {
           incomingData={incomingData}
           setShownPosts={setShownPosts}
           shownPosts={shownPosts}
-          profileUser={isProfile.profileUser}
+          profileUser={profileUser}
+          posts={posts}
         />
       ) : null}
     </div>
   );
 }
 
-export default Wrapper;
+export default withStore(Wrapper, ["loading"]);
