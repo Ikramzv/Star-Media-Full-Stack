@@ -15,24 +15,6 @@
     display: none;
 }
 
-.birthdayContainer {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.birthdayImg {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.birthdayText {
-    font-weight: 300;
-    font-size: 15px;
-}
-
 .rightbarAd {
     width: 100%;
     margin-block: 30px;
@@ -48,6 +30,7 @@
     margin: 0;
     list-style: none;
     overflow-y: auto;
+    max-height: 35vh;
 }
 
 .hidden {
@@ -106,10 +89,6 @@
         overflow-y: auto;
     }
 
-    .birthdayContainer {
-        gap: 10px;
-    }
-
     .openRightbar {
         animation: openRightbar 500ms ease forwards 1s;
     }
@@ -135,7 +114,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background-color: rgb(95, 135, 95);
+        background-color: white;
         cursor: pointer;
     }
 
