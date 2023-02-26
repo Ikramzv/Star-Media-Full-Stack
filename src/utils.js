@@ -4,19 +4,44 @@ export const checkItemExists = (source, target) => {
   return source.some((item) => item === target);
 };
 
-export const updateRecipeForLike = (posts, arg) => {
-  const { postId, userId } = arg;
-  return posts.map((post) => {
-    if (post?._id === postId) {
-      post = {
-        ...post,
-        likes: checkItemExists(post.likes, userId)
-          ? post.likes.filter((id) => id !== userId)
-          : [...post.likes, userId],
+export const serialize = (object) => JSON.stringify(object);
+
+export const isCached = (store, endpoint, args) => {
+  const serializedArg = serialize(args);
+  const queryCacheKey = `${endpoint}(${serializedArg})`;
+  return store.getState().api.queries[`${queryCacheKey}`]?.data;
+};
+
+export const updateRecipeForLike = (items, arg) => {
+  const { itemId, userId } = arg;
+  return items.map((item) => {
+    if (item?._id === itemId) {
+      item = {
+        ...item,
+        likes: checkItemExists(item.likes, userId)
+          ? item.likes.filter((id) => id !== userId)
+          : [...item.likes, userId],
       };
     }
-    return post;
+    return item;
   });
+};
+
+export const updateRecipe = (items, arg, updateProp, cb) => {
+  const { itemId, change } = arg;
+  return items.map((item) => {
+    if (item?._id === itemId) {
+      item = {
+        ...item,
+        [updateProp]: cb ? cb(item[updateProp]) : change,
+      };
+    }
+    return item;
+  });
+};
+
+export const deleteRecipe = (items, removeValue) => {
+  return items.filter((item) => item?._id !== removeValue);
 };
 
 export const bothHomeProfileForTheCache = ({
@@ -41,7 +66,6 @@ export const bothHomeProfileForTheCache = ({
 };
 
 export const invalidatePostTag = (args) => {
-  console.log(args);
   if (!args.profileId) {
     return [{ type: "Post", id: args.postId || "POST_LIST" }];
   } else return [];
