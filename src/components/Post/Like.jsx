@@ -1,20 +1,24 @@
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useMemo } from "react";
 
-const Like = ({ item, user, action, args }) => {
-  const dispatch = useDispatch();
+const Like = ({ item, user, like, args }) => {
   const likePost = () => {
-    dispatch(action(...args));
+    like(args);
   };
+  const liked = useMemo(
+    () => item.likes.some((id) => id === user?._id),
+    [item.likes.length]
+  );
   return (
-    <div className="postBottomLeftActions">
-      {item.likes.some((id) => id === user?._id) ? (
-        <Favorite className="likeBtn" onClick={likePost} color="error" />
+    <button className="postActions postLikeAction" onClick={likePost}>
+      <span className="postActionsText">Like</span>
+      {liked ? (
+        <Favorite className="likeBtn" color="error" />
       ) : (
-        <FavoriteBorder className="likeBtn" onClick={likePost} />
+        <FavoriteBorder className="likeBtn" />
       )}
       <span className="likeCounter">{item.likes.length}</span>
-    </div>
+    </button>
   );
 };
 
