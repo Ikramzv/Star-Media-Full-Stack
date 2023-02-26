@@ -1,34 +1,37 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createConversationAction } from "../../actions/conversationActions";
+import { addConversation } from "../../slices/conversationSlice";
 
-function SearchedFriends({ friend, setDisplay, setBar }) {
+function SearchedFriends({
+  friend,
+  setValue,
+  setBar,
+  createConversationMutation,
+}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { conversations } = useSelector((state) => state.conversation);
+  const conversations = useSelector((state) => state.conversations);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setBar("close");
-    setDisplay(false); // for hiding the list
-    const memberIds = [];
-    // By iterating ove all covnersations' members push members ids to array . Then
-    // if array includes friend id set currentChat to existing conversation
-    // if array not includes friend id create new conversation at this time
-    conversations.map((c) => c?.members.map((m) => memberIds.push(m)));
+    setValue("");
+    const memberSet = new Set();
 
-    if (memberIds.some((memberId) => memberId === friend?._id)) {
-      let existingConv = {};
-      conversations.map((c) => {
-        if (c?.members.some((id) => id === friend?._id)) {
-          return (existingConv = c);
+    conversations.forEach((c) => c?.members.map((m) => memberSet.add(m)));
+
+    if (memberSet.has(friend?._id)) {
+      for (let conversation of conversations) {
+        if (conversation?.members.some((id) => id === friend?._id)) {
+          return navigate(`/messenger/${conversation?._id}`);
         }
-      });
-
-      navigate(`/messenger/${existingConv?._id}`);
-    } else {
-      return dispatch(createConversationAction(friend?._id, navigate));
+      }
     }
+
+    const { data } = await createConversationMutation(friend?._id);
+    dispatch(addConversation(data));
+    navigate(`/messenger/${data?._id}`);
+    return;
   };
 
   return (

@@ -2,42 +2,46 @@ import { CircularProgress } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { injectEndpoints } from "../../api";
+import { setConversations } from "../../slices/conversationSlice";
 import Conversation from "../Conversations/Conversation";
 import SearchedFriends from "./SearchedFriends";
 
 function SidebarForMessenger({ followings, setBar }) {
   const [searchedFriend, setSearchFriend] = useState([]);
   const [value, setValue] = useState("");
-  const [display, setDisplay] = useState(true);
   const dispatch = useDispatch();
 
-  const { useGetConversationsQuery } = useMemo(() => {
-    return injectEndpoints({
-      endpoints: (builder) => ({
-        getConversations: builder.query({
-          query: () => `/conversations`,
+  const { useCreateConversationMutation, useLazyGetConversationsQuery } =
+    useMemo(() => {
+      return injectEndpoints({
+        endpoints: (builder) => ({
+          getConversations: builder.query({
+            query: () => `/conversations`,
+          }),
+          createConversation: builder.mutation({
+            query: (receiverId) => ({
+              url: `/conversations/${receiverId}`, // receiverId is a person that you want to take a conversation
+              method: "POST",
+            }),
+          }),
         }),
-      }),
-    });
-  }, []);
+      });
+    }, []);
 
-  const { data: conversations, isLoading } = useGetConversationsQuery();
-
-  useEffect(() => {
-    if (value.length === 0) {
-      setSearchFriend([]);
-      setDisplay(true);
-    }
-  }, [value]);
+  const [getConversations, { data: conversations, isLoading }] =
+    useLazyGetConversationsQuery();
+  const [createConversationMutation] = useCreateConversationMutation();
 
   const handleChange = (e) => {
     // Take a value from input and create list based on friends username
-    if (value.length === 0) {
+    const targetValue = e.target.value;
+    setValue(targetValue);
+    if (targetValue.length === 0) {
       setSearchFriend([]);
+      return;
     }
-    setValue(e.target.value);
-    const searchTerm = e.target.value.toLowerCase();
-    const searched = [...followings].filter(
+    const searchTerm = targetValue.toLowerCase();
+    const searched = followings.filter(
       (friend) => friend?.username?.toLowerCase().indexOf(searchTerm) > -1
     );
 
@@ -47,10 +51,8 @@ function SidebarForMessenger({ followings, setBar }) {
   };
 
   useEffect(() => {
-    if (!display) {
-      setValue("");
-    }
-  }, [display]);
+    getConversations().then(({ data }) => dispatch(setConversations(data)));
+  }, []);
 
   const conversationMemo = useMemo(() => {
     return conversations?.map((c) => (
@@ -59,7 +61,7 @@ function SidebarForMessenger({ followings, setBar }) {
   }, [conversations?.length]);
 
   return (
-    <div>
+    <div className="messenger-sidebar-container">
       <input
         placeholder="Search for friends to message.."
         type={"text"}
@@ -77,14 +79,15 @@ function SidebarForMessenger({ followings, setBar }) {
           conversationMemo
         )}
         {searchedFriend.length > 0 && (
-          <div className={`searchedFriendList ${display ? "active" : ""}`}>
+          <div className={`searchedFriendList ${value.length ? "active" : ""}`}>
             <h4 style={{ margin: "5px 0 0 10px" }}>Searched ...</h4>
             {searchedFriend?.map((friend) => (
               <SearchedFriends
                 key={friend._id}
                 friend={friend}
-                setDisplay={setDisplay}
+                setValue={setValue}
                 setBar={setBar}
+                createConversationMutation={createConversationMutation}
               />
             ))}
           </div>
