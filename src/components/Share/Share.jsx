@@ -5,22 +5,62 @@ import {
   PermMedia,
   Room,
 } from "@mui/icons-material";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { END_LOADING, START_LOADING } from "../../actions/actionTypes";
-import { createUserPost } from "../../actions/postAction";
+import { injectEndpoints } from "../../api";
+import { bothHomeProfileForTheCache, invalidatePostTag } from "../../utils";
 import "./share.css";
 
 const regexpUrl =
   /(http|https):\/\/(www?(\.))?[A-z\d]{1,}\.(com|az|ru|org|co|net|tr|us)(\/[A-z\d\S]{1,})?/gi; // url
 
 function Share() {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
   const [desc, setDesc] = useState([]);
   const [media, setMedia] = useState("");
   const dispatch = useDispatch();
   const { id: profileId } = useParams();
+
+  const { useCreatePostMutation } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        createPost: builder.mutation({
+          query: (body) => ({
+            body,
+            url: "/posts",
+            method: "POST",
+          }),
+          transformResponse(res) {
+            const newPost = {
+              ...res,
+              commentsCount: {
+                count: 0,
+              },
+              user,
+            };
+            const args = newPost;
+            if (profileId) args.profileId = profileId;
+            bothHomeProfileForTheCache({
+              dispatch,
+              endpoint: "posts",
+              args,
+              action: (posts, { ...post }) => {
+                return [post, ...posts];
+              },
+            });
+            return newPost;
+          },
+          invalidatesTags: () => {
+            return invalidatePostTag({ postId: "POST_LIST", profileId });
+          },
+        }),
+      }),
+    });
+  }, []);
+
+  const [createPostMutation] = useCreatePostMutation();
 
   const handleChange = (e) => {
     setDesc(e.target.value);
@@ -34,24 +74,23 @@ function Share() {
       id="postImageInput"
       style={{ display: "none" }}
       onChange={(e) => {
-        console.log(e);
         imageToUrl(e.target.files[0]);
       }}
     />
   );
 
-  const recreateInput = () => {
-    const props = input.current.props;
-    const newInput = React.createElement(input.current.type, {
+  const recreateInput = (input) => {
+    const props = input.props;
+    const newInput = React.createElement(input.type, {
       key: crypto.randomUUID(),
       ...props,
     });
-    input.current = newInput;
+    return newInput;
   };
 
   const resetImage = (e) => {
     e.preventDefault();
-    recreateInput();
+    input.current = recreateInput(input.current);
     setMedia("");
   };
 
@@ -59,7 +98,6 @@ function Share() {
     dispatch({ type: START_LOADING });
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    console.log(reader.result, file);
     reader.onloadend = () => {
       const src = reader.result;
       if (file.type.includes("video")) {
@@ -89,15 +127,11 @@ function Share() {
   const createPost = (e) => {
     e.preventDefault();
     if (desc.length > 0) {
-      dispatch(
-        createUserPost(
-          {
-            desc,
-            img: media,
-          },
-          user
-        )
-      );
+      const postData = {
+        desc,
+        img: media,
+      };
+      createPostMutation(postData);
       setMedia("");
       setDesc("");
     } else {
