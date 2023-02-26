@@ -31,4 +31,4 @@ function ModeSwitcher() {
   );
 }
 
-export default ModeSwitcher;
+export default React.memo(ModeSwitcher);
