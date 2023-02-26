@@ -114,24 +114,32 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    cursor: pointer;
+    transition: 100ms ease;
 }   
+
+.topbar-img:active {
+    scale: 0.95;
+}
 
 .dropdownList {
     position: absolute;
-    top: 101%;
-    right: 20px;
+    top: 114%;
+    right: -5px;
     width: 200px;
     min-height: 60px;
     z-index: 1000;
     background-color: rgb(88, 16, 31);
     display: flex;
     flex-direction: column;
-    transform-origin: top center;
-    transform: scaleY(0);
+    transform-origin: top;
     list-style: none;
-    margin: 0;
-    padding: 0;
-    animation: showdd 500ms ease forwards;
+    transform: scaleY(0);
+    transition: 200ms ease transform;
+}
+
+.dropdownList.active {
+    transform: scaleY(1);
 }
 
 .dropdownItem {
@@ -171,12 +179,6 @@
 
 .hidden {
     display: none !important;
-}
-
-@keyframes showdd {
-    100% {
-        transform: scaleY(1);
-    }
 }
 
 @media (max-width: 768px) {
