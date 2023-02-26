@@ -1,22 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { getFollowings } from "../../api";
+import CircularProgress from "@mui/material/CircularProgress";
+import React, { useMemo } from "react";
+import { injectEndpoints } from "../../api";
 import Following from "./Followings/Following";
 
 const ProfileRightbar = ({ profileUser, setBar }) => {
-  const [friends, setFriends] = useState([]);
-
-  async function getFollowingsUser() {
-    if (profileUser?.followings?.length > 0) {
-      const { data } = await getFollowings(profileUser?._id);
-      setFriends(data.followings);
-      return data;
-    }
-  }
-  useEffect(() => {
-    if (profileUser?._id) {
-      getFollowingsUser();
-    }
+  const { useGetFollowingsQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getFollowings: builder.query({
+          query: (id) => ({
+            url: `/users/followings/${id}`,
+          }),
+          transformResponse: (res) => res.followings,
+        }),
+      }),
+    });
   }, [profileUser?._id]);
+
+  const { data: friends, isLoading } = useGetFollowingsQuery(profileUser?._id);
+
   return (
     <>
       <h4 className="rightbarTitle">User Information</h4>
@@ -42,9 +44,13 @@ const ProfileRightbar = ({ profileUser, setBar }) => {
       </div>
       <h4 className="rightbarTitle">User Friends</h4>
       <div className="rightbarFollowings">
-        {friends.map((friend) => (
-          <Following user={friend} key={friend?._id} setBar={setBar} />
-        ))}
+        {!isLoading ? (
+          friends.map((friend) => (
+            <Following user={friend} key={friend?._id} setBar={setBar} />
+          ))
+        ) : (
+          <CircularProgress style={{ margin: "auto" }} color="error" />
+        )}
       </div>
     </>
   );
