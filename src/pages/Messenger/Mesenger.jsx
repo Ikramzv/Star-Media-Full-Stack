@@ -34,11 +34,9 @@ function Mesenger({ state }) {
 
   useEffect(() => {
     if (convId) {
-      loading.current = true;
-      getConversation(convId, true).then(({ data }) => {
-        dispatch(setCurrentChat(data));
-        loading.current = false;
-      });
+      getConversation(convId, true).then(({ data }) =>
+        dispatch(setCurrentChat(data))
+      );
     } else {
       dispatch(setCurrentChat(null));
     }
@@ -52,7 +50,7 @@ function Mesenger({ state }) {
       <div className="chatBox">
         {convId ? (
           <>
-            <MessengerContainer>
+            <MessengerContainer loading={loading}>
               {messages?.length ? (
                 messages?.map((m, i) => {
                   return (
@@ -65,7 +63,7 @@ function Mesenger({ state }) {
                 })
               ) : (
                 <div className="noMessagesContainer">
-                  {loading ? (
+                  {loading.current ? (
                     <CircularProgress color="error" />
                   ) : (
                     <span>Chat your friend</span>

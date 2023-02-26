@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { injectEndpoints } from "../../api";
 import { setMessages } from "../../slices/messagesReducer";
 
-function MessengerContainer({ children }) {
+function MessengerContainer({ children, loading }) {
   const messages = useSelector((state) => state.messages);
   const dispatch = useDispatch();
   const { id: convId } = useParams();
@@ -12,9 +12,15 @@ function MessengerContainer({ children }) {
 
   const { useLazyGetMessagesQuery } = useMemo(() => {
     return injectEndpoints({
+      overrideExisting: true,
       endpoints: (builder) => ({
         getMessages: builder.query({
           query: (convId) => `/messages/${convId}`,
+          onQueryStarted: () => (loading.current = true),
+          transformResponse: (res) => {
+            loading.current = false;
+            return res;
+          },
         }),
       }),
     });
