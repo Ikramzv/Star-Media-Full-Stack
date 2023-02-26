@@ -5,23 +5,19 @@ import {
   Person,
   Search,
 } from "@mui/icons-material";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { SET_UNREAD_MESSAGES } from "../../actions/actionTypes";
-import { getAllMessages, getUserWithQuery } from "../../api";
+import { getUserWithQuery } from "../../api";
 import DropDown from "./DropDown";
 import "./topbar.css";
 
 function Topbar() {
   const [topRight, setTopRight] = useState(false);
-  const navigate = useNavigate();
-  const { user, unreadMessages } = useSelector((state) => ({
-    user: state.user.user,
-    unreadMessages: state.messages.unreadMessages,
-  }));
-  const dispatch = useDispatch();
   const [value, setValue] = useState("");
+
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   const handleKeyUp = async (e) => {
     if (e.keyCode === 13) {
@@ -31,20 +27,6 @@ function Topbar() {
       alert(`No user was found with the given username : ${value}`);
     }
   };
-
-  useEffect(() => {
-    async function getMessages() {
-      const { data } = await getAllMessages();
-      dispatch({
-        type: SET_UNREAD_MESSAGES,
-        payload: data.filter(
-          (msg) => msg.read === false && msg.sender !== user?._id
-        ),
-      });
-    }
-
-    getMessages();
-  }, []);
 
   return (
     <div className="topbar-container">
@@ -86,7 +68,7 @@ function Topbar() {
             onClick={() => navigate("/messenger")}
           >
             <Chat />
-            <span
+            {/* <span
               className={`${
                 unreadMessages.length > 0
                   ? "topbar-icon-badge"
@@ -94,7 +76,7 @@ function Topbar() {
               }`}
             >
               {unreadMessages.length}
-            </span>
+            </span> */}
           </div>
           <div className="topbar-icon-item">
             <Notifications />
