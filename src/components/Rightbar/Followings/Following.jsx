@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function Following({ user, setBar }) {
   const navigate = useNavigate("");
-  useEffect(() => {}, [user]);
+
   return (
     <div
       className="rightbarFollowing"
