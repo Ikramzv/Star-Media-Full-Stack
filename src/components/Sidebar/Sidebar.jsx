@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
+import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { getFollowings } from "../../api";
+import { injectEndpoints } from "../../api";
 import CloseFriend from "../CloseFriends/CloseFriend";
 import "./Sidebar.css";
 import SidebarForMessenger from "./SidebarForMessenger";
@@ -8,17 +9,21 @@ import SidebarList from "./SidebarList";
 
 function Sidebar({ messenger, currentChat }) {
   const [bar, setBar] = useState("");
-  const { user } = useSelector((state) => state.user);
-  const [followings, setFollowings] = useState([]);
-  useEffect(() => {
-    if (user) {
-      async function getUserFollowings() {
-        const { data } = await getFollowings(user?._id);
-        setFollowings(data.followings);
-      }
-      getUserFollowings();
-    }
+  const user = useSelector((state) => state.user);
+  const { useGetFollowingsQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getFollowings: builder.query({
+          query: (id) => ({
+            url: `/users/followings/${id}`,
+          }),
+          transformResponse: (res) => res.followings,
+        }),
+      }),
+    });
   }, [user?._id]);
+
+  const { data: followings, isLoading } = useGetFollowingsQuery(user?._id);
 
   return (
     <>
@@ -53,10 +58,17 @@ function Sidebar({ messenger, currentChat }) {
               <SidebarList />
               <button className="sidebarButton">Show more</button>
               <hr className="sidebarHr" />
+              <h3 style={{ marginBottom: "10px", fontWeight: 400 }}>
+                Your followings
+              </h3>
               <ul className="sidebarFriendList">
-                {followings.map((f, i) => (
-                  <CloseFriend friend={f} key={i} setBar={setBar} />
-                ))}
+                {!isLoading ? (
+                  followings?.map((f, i) => (
+                    <CloseFriend friend={f} key={i} setBar={setBar} />
+                  ))
+                ) : (
+                  <CircularProgress style={{ margin: "auto" }} color="error" />
+                )}
               </ul>
             </>
           )}
