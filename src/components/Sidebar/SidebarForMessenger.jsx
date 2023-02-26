@@ -1,21 +1,27 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import {
-  setMessagesUnread,
-  setUnreadMessagesRead,
-} from "../../actions/messagesAction";
-import { getAllUnreadMessages } from "../../api";
+import { useDispatch } from "react-redux";
+import { injectEndpoints } from "../../api";
 import Conversation from "../Conversations/Conversation";
 import SearchedFriends from "./SearchedFriends";
 
-function SidebarForMessenger({ currentChat, followings, setBar }) {
+function SidebarForMessenger({ followings, setBar }) {
   const [searchedFriend, setSearchFriend] = useState([]);
   const [value, setValue] = useState("");
   const [display, setDisplay] = useState(true);
-  const { conversations } = useSelector((state) => state.conversation);
-  const { id: convId } = useParams();
   const dispatch = useDispatch();
+
+  const { useGetConversationsQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getConversations: builder.query({
+          query: () => `/conversations`,
+        }),
+      }),
+    });
+  }, []);
+
+  const { data: conversations, isLoading } = useGetConversationsQuery();
 
   useEffect(() => {
     if (value.length === 0) {
@@ -46,24 +52,11 @@ function SidebarForMessenger({ currentChat, followings, setBar }) {
     }
   }, [display]);
 
-  useEffect(() => {
-    async function getUnreadMessageForConversation() {
-      const { data } = await getAllUnreadMessages();
-      const messages = data.filter((msg) => msg.conversationId === convId);
-      if (messages.length > 0) {
-        return dispatch(setUnreadMessagesRead(convId));
-      } else {
-        return dispatch(setMessagesUnread(messages));
-      }
-    }
-    getUnreadMessageForConversation();
-  }, []);
-
   const conversationMemo = useMemo(() => {
     return conversations?.map((c) => (
       <Conversation key={c._id} conversation={c} setBar={setBar} />
     ));
-  }, [conversations.length]);
+  }, [conversations?.length]);
 
   return (
     <div>
@@ -75,9 +68,16 @@ function SidebarForMessenger({ currentChat, followings, setBar }) {
         onChange={handleChange}
       />
       <ul className="conversationList">
-        {conversationMemo}
-        {display && searchedFriend.length > 0 && (
-          <div className="searchedFriendList">
+        {isLoading ? (
+          <CircularProgress
+            style={{ margin: "auto", display: "block" }}
+            color="error"
+          />
+        ) : (
+          conversationMemo
+        )}
+        {searchedFriend.length > 0 && (
+          <div className={`searchedFriendList ${display ? "active" : ""}`}>
             <h4 style={{ margin: "5px 0 0 10px" }}>Searched ...</h4>
             {searchedFriend?.map((friend) => (
               <SearchedFriends
