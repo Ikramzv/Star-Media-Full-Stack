@@ -1,25 +1,22 @@
 import { Comment as CommentIcon } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { SET_MODAL } from "../../actions/actionTypes";
+import { setModal } from "../../slices/modalReducer";
 import "./comment.css";
 
 function Comment({ post }) {
   const dispatch = useDispatch();
-
   const handleClick = () => {
-    dispatch({
-      type: SET_MODAL,
-      postId: post?._id,
-    });
+    dispatch(setModal({ postId: post?._id }));
   };
 
   return (
     <>
-      <div className="postBottomLeftActions" onClick={handleClick}>
+      <button className="postActions postCommentButton" onClick={handleClick}>
+        <span className="postActionsText">Comment</span>
         <CommentIcon color="primary" />
         <span>{post?.commentsCount?.count}</span>
-      </div>
+      </button>
     </>
   );
 }

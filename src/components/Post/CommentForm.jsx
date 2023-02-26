@@ -1,35 +1,73 @@
 import { Button } from "@mui/material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { INCREMENT_COMMENT_COUNTS } from "../../actions/actionTypes";
-import { createCommentAction } from "../../actions/commentAction";
+import { injectEndpoints, updateQueryData } from "../../api";
+import { addComment } from "../../slices/commentReducer";
+import { updateRecipe } from "../../utils";
 
 function CommentForm({ user, postId }) {
   const [value, setValue] = useState("");
   const dispatch = useDispatch();
-
   const handleChange = (e) => {
     setValue(e.target.value);
   };
 
+  const { useCreateCommentMutation } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        createComment: builder.mutation({
+          query: ({ comment, postId, _id }) => ({
+            url: `/comments`,
+            body: { comment, postId, _id },
+            method: "POST",
+          }),
+          onQueryStarted(comment, {}) {
+            const { postId } = comment;
+            dispatch(addComment(comment));
+            dispatch(
+              updateQueryData(
+                "loadComments",
+                { since: null, postId },
+                (comments) => [comment, ...comments]
+              )
+            );
+            dispatch(
+              updateQueryData("posts", { since: null }, (posts) => {
+                return updateRecipe(
+                  posts,
+                  { itemId: postId },
+                  "commentsCount",
+                  (commentsCount) => ({ count: commentsCount.count + 1 })
+                );
+              })
+            );
+          },
+        }),
+      }),
+    });
+  }, [postId]);
+
+  const [createComment] = useCreateCommentMutation();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = {
+      _id: crypto.randomUUID(),
       likes: [],
       createdAt: new Date().toISOString(),
       comment: value,
-      postId: postId,
+      postId,
+      userId: user?._id,
       user: {
         username: user?.username,
         userProfileImage: user?.userProfileImage,
-        _id: user?._id,
+      },
+      cacheKey: {
+        endpoint: "loadComments",
+        since: null,
       },
     };
-    dispatch(createCommentAction(data));
-    dispatch({
-      type: INCREMENT_COMMENT_COUNTS,
-      postId: postId,
-    });
+    createComment(data);
     setValue("");
   };
   return (
@@ -41,7 +79,7 @@ function CommentForm({ user, postId }) {
         value={value}
         onChange={handleChange}
         className="comment_input"
-        placeholder="Start a comment"
+        placeholder={`${user?.username} start a comment ...`}
       />
       <Button
         disabled={!Boolean(value)}
@@ -56,4 +94,4 @@ function CommentForm({ user, postId }) {
   );
 }
 
-export default CommentForm;
+export default React.memo(CommentForm);
