@@ -1,24 +1,43 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessageAction } from "../../actions/messagesAction";
+import { injectEndpoints } from "../../api";
 import { socket } from "../../constants";
+import { sendMessageAction } from "../../slices/messagesReducer";
 
-function ChatInput({ currentChat, setOnlineFriends }) {
+function ChatInput({ currentChat }) {
   const [value, setValue] = useState("");
-  const [socketMessage, setSocketMessage] = useState(null);
-  const { user } = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
+  const { useSendMessageMutation } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        sendMessage: builder.mutation({
+          query: (msg) => ({
+            body: msg,
+            url: `/messages`,
+            method: "POST",
+          }),
+        }),
+      }),
+    });
+  }, []);
+
+  const [sendMessageMutation] = useSendMessageMutation();
+
   const sendMessage = () => {
-    // dispatch action
-    dispatch(
-      sendMessageAction({
-        conversationId: currentChat?._id,
-        text: value,
-        sender: user?._id,
-        createdAt: Date.now(),
-      })
-    );
+    // dispatch an action
+    const msg = {
+      conversationId: currentChat?._id,
+      text: value,
+      sender: user?._id,
+      createdAt: Date.now(),
+    };
+
+    dispatch(sendMessageAction(msg));
+    // trigger the mutation
+    sendMessageMutation(msg);
+
     // clear input
     setValue("");
 
@@ -38,31 +57,9 @@ function ChatInput({ currentChat, setOnlineFriends }) {
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
-      setSocketMessage({
-        sender: data.senderId,
-        text: data.text,
-        conversationId: data.conversationId,
-        createdAt: Date.now(),
-        receiver: data.receiver,
-      });
+      dispatch(sendMessageAction(data));
     });
   }, []);
-
-  useEffect(() => {
-    if (socket && user?._id) {
-      socket.emit("sendUser", user?._id);
-      socket.on("getUsers", (users) => {
-        setOnlineFriends(users.filter((u) => u.userId !== user?._id));
-      });
-    }
-  }, [user?._id]);
-
-  useEffect(() => {
-    if (socketMessage) {
-      // friend display
-      dispatch(sendMessageAction(socketMessage, "socket_message"));
-    }
-  }, [socketMessage, currentChat]);
 
   return (
     <>
