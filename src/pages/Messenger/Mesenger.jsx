@@ -1,41 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { CircularProgress } from "@mui/material";
+import React, { useEffect, useMemo, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getConvs } from "../../actions/conversationActions";
-import { getMessages } from "../../actions/messagesAction";
-import { getSingleConversation } from "../../api";
+import { injectEndpoints } from "../../api";
 import Message from "../../components/Message/Message";
 import Rightbar from "../../components/Rightbar/Rightbar";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import withStore from "../../hocs/withStore";
+import { setCurrentChat } from "../../slices/currentChatSlice";
 import ChatInput from "./ChatInput";
 import "./mesenger.css";
 import MessengerContainer from "./MessengerContainer";
 
-function Mesenger() {
-  const { user } = useSelector((state) => state.user);
-  const [currentChat, setCurrentChat] = useState(null);
-  const { messages } = useSelector((state) => state.messages);
-  const [onlineFriends, setOnlineFriends] = useState([]);
-
+function Mesenger({ state }) {
+  const { messages, currentChat } = useMemo(() => state, Object.values(state));
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { id: convId } = useParams();
+  const loading = useRef(false);
+
+  const { useLazyGetCurrentConversationQuery } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        getCurrentConversation: builder.query({
+          query: (convId) => ({
+            url: `/conversations/${convId}`,
+          }),
+        }),
+      }),
+    });
+  }, []);
+
+  const [getConversation] = useLazyGetCurrentConversationQuery();
 
   useEffect(() => {
-    dispatch(getConvs());
-  }, [user?._id]);
-
-  useEffect(() => {
-    async function getConversation(id) {
-      const { data } = await getSingleConversation(id);
-      setCurrentChat(data);
-    }
-    if (id) {
-      getConversation(id);
-      dispatch(getMessages(id));
+    if (convId) {
+      loading.current = true;
+      getConversation(convId, true).then(({ data }) => {
+        dispatch(setCurrentChat(data));
+        loading.current = false;
+      });
     } else {
-      setCurrentChat(null);
+      dispatch(setCurrentChat(null));
     }
-  }, [id]);
+  }, [convId]);
 
   return (
     <div className="messenger">
@@ -43,11 +50,11 @@ function Mesenger() {
         {<Sidebar messenger currentChat={currentChat} />}
       </div>
       <div className="chatBox">
-        {id ? (
+        {convId ? (
           <>
             <MessengerContainer>
-              {messages.length ? (
-                messages.map((m, i) => {
+              {messages?.length ? (
+                messages?.map((m, i) => {
                   return (
                     <Message
                       receiver={currentChat?.receiver}
@@ -58,15 +65,16 @@ function Mesenger() {
                 })
               ) : (
                 <div className="noMessagesContainer">
-                  <span>Chat your friend</span>
+                  {loading ? (
+                    <CircularProgress color="error" />
+                  ) : (
+                    <span>Chat your friend</span>
+                  )}
                 </div>
               )}
             </MessengerContainer>
             <div className="chatBoxBottom">
-              <ChatInput
-                currentChat={currentChat}
-                setOnlineFriends={setOnlineFriends}
-              />
+              <ChatInput currentChat={currentChat} />
             </div>
           </>
         ) : (
@@ -76,10 +84,10 @@ function Mesenger() {
         )}
       </div>
       <div className="chatOnline">
-        <Rightbar messenger onlineFriends={onlineFriends} />
+        <Rightbar messenger />
       </div>
     </div>
   );
 }
 
-export default Mesenger;
+export default withStore(Mesenger, ["messages", "currentChat", "user"]);
