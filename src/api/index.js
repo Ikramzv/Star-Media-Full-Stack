@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import SERVER_URL from "../constants";
-import { setLoading } from "../reducers/loadingReducer";
+import { setLoading } from "../slices/loadingReducer";
 
 function baseQuery() {
   return async (args, api, extraOptions) => {
@@ -10,14 +10,16 @@ function baseQuery() {
       const user = JSON.parse(localStorage.getItem("user"));
       headers["authorization"] = `Bearer ${user.accessToken}`;
     }
-    const checkPost = /posts/i;
-    if (api.endpoint.match(checkPost)) api.dispatch(setLoading(true));
+    const checkPost = /(posts|createPost)/i;
+    const matches = checkPost.test(api.endpoint);
+    if (matches) api.dispatch(setLoading(true));
     const result = await fetchBaseQuery({ baseUrl: SERVER_URL, headers })(
       args,
       api,
       extraOptions
     );
-    if (api.endpoint.match(checkPost)) api.dispatch(setLoading(false));
+
+    if (matches) api.dispatch(setLoading(false));
 
     return result;
   };
