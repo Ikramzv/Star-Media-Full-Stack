@@ -1,7 +1,12 @@
 import React from "react";
+import { shallowEqual, useSelector } from "react-redux";
 import ChatOnline from "../ChatOnline/ChatOnline";
 
-const MessengerRightbar = ({ onlineFriends, setBar }) => {
+const MessengerRightbar = ({ setBar }) => {
+  const onlineFriends = useSelector(
+    (state) => state.onlineFriends,
+    shallowEqual
+  );
   return onlineFriends.map((f, i) => (
     <ChatOnline setBar={setBar} online={f} key={i} />
   ));
