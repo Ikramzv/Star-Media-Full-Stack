@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { api } from "./api/index";
 import {
   commentsReducer,
+  conversationReducer,
   currentChatReducer,
   loadingReducer,
   messagesReducer,
@@ -20,6 +21,7 @@ const store = configureStore({
     currentChat: currentChatReducer,
     messages: messagesReducer,
     onlineFriends: onlineFriendsReducer,
+    conversations: conversationReducer,
   },
   middleware: (gdm) => {
     return gdm().concat([api.middleware]);

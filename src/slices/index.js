@@ -1,4 +1,5 @@
 export { reducer as commentsReducer } from "./commentReducer";
+export { reducer as conversationReducer } from "./conversationSlice";
 export { reducer as currentChatReducer } from "./currentChatSlice";
 export { reducer as loadingReducer } from "./loadingReducer";
 export { reducer as messagesReducer } from "./messagesReducer";
