@@ -28,4 +28,4 @@ function UserImage({ userImage, setImage, changeImgToUrl, text, name, id }) {
   );
 }
 
-export default UserImage;
+export default React.memo(UserImage);
