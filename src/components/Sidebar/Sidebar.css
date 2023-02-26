@@ -100,36 +100,9 @@
     background-image: url("https://cdn.mos.cms.futurecdn.net/adLnFowUSH3CmRgGBdQ6yU.jpg");
     background-size: cover;
     background-position: center;
-    /* background-color: white; */
 
     transition: 500ms cubic-bezier(0.165, 0.84, 0.44, 1) , 200ms ease background-color 125ms;
 }
-
-/* .sun {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background-image: url("https://cdn.mos.cms.futurecdn.net/adLnFowUSH3CmRgGBdQ6yU.jpg");
-    background-size: cover;
-    background-position: center;
-    transition: 200ms ease;
-    transform: translateY(0%);
-    opacity: 1;
-}
-
-.moon {
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    background: radial-gradient(ellipse farthest-corner at 33% 100%, rgb(35, 31, 32) 42%, rgb(161, 159, 160) 60%);
-    background-size: 150% 100%;
-    border: 3px solid rgb(29, 27, 28);
-    border-radius: 50%;
-    transition: 200ms ease;
-    transform: translateY(100%);
-    opacity: 0;
-} */
 
 .sidebarWrapper:has( .mode-switcher .mode-switcher-container .mode-switcher-button:checked) .sun {
     transform: translateY(100%);
