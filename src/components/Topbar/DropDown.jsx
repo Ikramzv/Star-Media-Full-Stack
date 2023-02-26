@@ -2,49 +2,48 @@ import { Close, Logout, Person } from "@mui/icons-material";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { logOutUser } from "../../actions/userAction";
+import { logOut } from "../../slices/userReducer";
 
 function DropDown({ user }) {
   const [dropDown, setDropDown] = useState(false);
   const dispatch = useDispatch();
-  const logOut = () => {
-    dispatch(logOutUser());
+  const logout = () => {
+    dispatch(logOut());
   };
+
+  const onClose = () => setDropDown(false);
+
   return (
     <>
       <img
         src={user?.userProfileImage ? user?.userProfileImage : "/user.webp"}
         alt=""
         className="topbar-img"
-        onMouseOver={() => setDropDown(true)}
+        onClick={() => setDropDown((prev) => !prev)}
       />
-      {dropDown && (
-        <ul className="dropdownList">
-          <Close
-            className="closeDropdown"
-            onTransitionEnd={() => setDropDown(false)}
-          />
-          <li className="dropdownItem" onClick={() => setDropDown(false)}>
-            <Link
-              to={`/profile/${user?._id}`}
-              style={{
-                color: "white",
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Person />
-              Profile
-            </Link>
+
+      <ul className={`dropdownList ${dropDown ? "active" : ""}`}>
+        <Close className="closeDropdown" onClick={onClose} />
+        <Link
+          to={`/profile/${user?._id}`}
+          style={{
+            color: "white",
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <li className="dropdownItem" onClick={onClose}>
+            <Person />
+            Profile
           </li>
-          <li className="dropdownItem" onClick={logOut}>
-            <Logout />
-            Logout
-          </li>
-        </ul>
-      )}
+        </Link>
+        <li className="dropdownItem" onClick={logout}>
+          <Logout />
+          Logout
+        </li>
+      </ul>
     </>
   );
 }
