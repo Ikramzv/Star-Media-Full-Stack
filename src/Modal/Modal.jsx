@@ -1,42 +1,25 @@
 import { CircularProgress, Fade, Grid, Modal } from "@mui/material";
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { FETCH_FROM_CACHE, ON_CLOSE } from "../actions/actionTypes";
-import { getCommentsAction } from "../actions/commentAction";
+import React, { useMemo, useRef } from "react";
+import { useDispatch } from "react-redux";
 import CommentForm from "../components/Post/CommentForm";
 import CommentWrapper from "../components/Post/CommentWrapper";
 import EachComment from "../components/Post/EachComment";
+import withStore from "../hocs/withStore";
+import { setModalClose } from "../slices/modalReducer";
 
-function ModalComponent() {
+function ModalComponent({ state }) {
   const {
-    comments: { comments, cachedComments },
-    cLoading,
+    comments: { comments, loading },
     modal: { postId, open },
-    user: { user },
-  } = useSelector((state) => state);
-
+    user,
+  } = useMemo(() => state, Object.values(state));
   const dispatch = useDispatch();
-  const firstLoading = useRef(false);
-
-  useEffect(() => {
-    if (open) {
-      if (`${postId},` in cachedComments) {
-        const reg = new RegExp(postId, "i");
-        const map = Object.keys(cachedComments).filter((key) => reg.test(key));
-        dispatch({ type: FETCH_FROM_CACHE, key: map.at(-1) });
-      } else {
-        firstLoading.current = true;
-        dispatch(
-          getCommentsAction(postId, undefined, "complete", firstLoading)
-        );
-      }
-    }
-  }, [open]);
+  const firstLoading = useRef(false); // always get new object when page is remounted ( when navigated to another url )
 
   return (
     <Modal
       open={open}
-      onClose={() => dispatch({ type: ON_CLOSE })}
+      onClose={() => dispatch(setModalClose())}
       keepMounted
       closeAfterTransition
       sx={{
@@ -56,7 +39,7 @@ function ModalComponent() {
           overflow="hidden"
           position={"relative"}
         >
-          {cLoading && (
+          {firstLoading.current || loading ? (
             <CircularProgress
               color="primary"
               sx={{
@@ -67,10 +50,16 @@ function ModalComponent() {
                 zIndex: "99999",
               }}
             />
+          ) : (
+            ""
           )}
           <Grid item xs={12} md={12} lg={8} p={2}>
-            <CommentWrapper postId={postId}>
-              {comments.length && !firstLoading.current ? (
+            <CommentWrapper
+              firstLoading={firstLoading}
+              postId={postId}
+              isModalOpen={open}
+            >
+              {comments?.length && !firstLoading.current ? (
                 comments.map((comment) => (
                   <EachComment
                     key={comment?._id}
@@ -88,7 +77,7 @@ function ModalComponent() {
                     height: "100%",
                   }}
                 >
-                  {!cLoading && (
+                  {!loading && !firstLoading.current && (
                     <p style={{ color: "gray", fontSize: "15px" }}>
                       There is no comments yet
                     </p>
@@ -113,4 +102,4 @@ function ModalComponent() {
   );
 }
 
-export default ModalComponent;
+export default withStore(ModalComponent, ["comments", "modal", "user"]);
