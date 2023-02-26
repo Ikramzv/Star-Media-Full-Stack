@@ -4,7 +4,7 @@ import MessengerRightbar from "./MessengerRightbar";
 import ProfileRightbar from "./ProfileRightbar";
 import "./Rightbar.css";
 
-function Rightbar({ user, messenger, onlineFriends }) {
+function Rightbar({ user, messenger }) {
   const [bar, setBar] = useState("");
 
   return (
@@ -41,10 +41,10 @@ function Rightbar({ user, messenger, onlineFriends }) {
                 <ProfileRightbar profileUser={user} setBar={setBar} />
               </>
             ) : (
-              <HomeRightbar onlineFriends={onlineFriends} setBar={setBar} />
+              <HomeRightbar setBar={setBar} />
             )
           ) : (
-            <MessengerRightbar onlineFriends={onlineFriends} setBar={setBar} />
+            <MessengerRightbar setBar={setBar} />
           )}
         </div>
       </div>
