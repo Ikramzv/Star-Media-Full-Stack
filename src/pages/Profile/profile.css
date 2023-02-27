@@ -41,6 +41,7 @@
 .profileInfo > h4{
     font-size: 25px;
     margin-right: 20px;
+    color: var(--text-color);
 }
 
 .profileInfoStatistics {
@@ -80,6 +81,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    color: var(--text-color);
 }
 
 .rightbarInfoKey {
@@ -87,7 +89,6 @@
 }
 
 .rightbarInfoValue {
-    color: rgb(0, 0, 0);
     font-weight: 300;
 }
 
@@ -105,6 +106,7 @@
     cursor: pointer;
     padding: 10px 20px;
     transition: 100ms ease scale;
+    color: var(--text-color);
 }
 
 .rightbarFollowing::after {
@@ -113,7 +115,7 @@
     left: 0;
     bottom: 0;
     width: 50%;
-    background-color: crimson;
+    background-color: var(--secondary-color);
     height: 1px;
     transition: 250ms ease;
 }
@@ -135,7 +137,6 @@
 }
 
 .rightbarFollowingUsername {
-    color: rgb(64, 52, 139);
     font-weight: 400;
 }
 
