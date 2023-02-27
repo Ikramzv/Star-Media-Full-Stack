@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner:wght@400;500;600&family=Roboto:wght@100;300;400;500;700&display=swap');
 
+
 * {
     margin: 0;
     padding: 0;
@@ -7,8 +8,49 @@
 }
 
 :root {
-    --main-color: rgb(97, 8, 26);
+    --main-color: rgb(80, 8, 23);
+    --body-color: white;
+    --text-color: black;
+    --border-color: rgb(19, 3, 49);
+    --main-hover-color: rgb(119, 38, 54);
+    --secondary-color: rgb(51, 4, 14);
+    --shadow-color: var(--border-color);
+    --post-bgcolor: white;
+
+    --green: rgb(4, 87, 4);
+    --blue: rgba(0, 0, 255, 0.458);
+    --light-blue: var(--blue);
+    --crimson: crimson;
+
+    --transition: 250ms ease;
+    --transition-property-color: color;
+    --transition-property-bgcolor: background-color;
 }
+
+:root:has(#root .sidebar .sidebarWrapper .mode-switcher .mode-switcher-container .mode-switcher-button:checked) {
+    --main-color: rgb(47, 10, 66);
+    --body-color: rgb(25, 3, 30);
+    --border-color: rgb(75, 15, 99);
+    --main-hover-color: rgb(45, 6, 51);
+    --secondary-color: rgb(118, 3, 184);
+    --text-color: white;
+    --post-bgcolor: rgba(47, 31, 65, 0.714);
+
+    --green: rgb(29, 226, 29);
+    --blue: rgba(1, 1, 38, 0.458);
+    --light-blue: rgba(37, 37, 239, 0.458);
+}
+
+div {
+    transition: var(--transition);
+    transition-property: var(--transition-property-bgcolor);
+}
+
+h1,h2,h3,h4,h5,h6,span,p,li,a {
+    transition: var(--transition);
+    transition-property: var(--transition-property-color);
+}
+
 
 ::selection {
     background-color: var(--main-color);
@@ -19,6 +61,9 @@ body {
     /* font-family: 'Edu VIC WA NT Beginner', cursive; */
     font-family: 'Roboto', sans-serif;
     overflow-x: hidden;
+    background-color: var(--body-color);
+    transition: var(--transition);
+    transition-property: var(--transition-property-bgcolor);
 }
 
 .loading {
@@ -30,4 +75,10 @@ body {
     height: 45px !important;
     border-radius: 50%;
     z-index: 100;
+}
+
+.btn {
+    background-color: transparent;
+    border: none;
+    outline: none;
 }
