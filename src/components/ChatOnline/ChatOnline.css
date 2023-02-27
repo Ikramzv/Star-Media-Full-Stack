@@ -3,6 +3,16 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 15px;
+    transition: var(--transition) background-color;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.chatOnlineFriend:hover {
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .chatOnlineImgContainer {
