@@ -2,7 +2,7 @@
     width: 100%;
     min-height: 170px;
     border-radius: 10px;
-    box-shadow: 4px 4px 5px 2px rgba(0,0,0,0.5);
+    box-shadow: 2px 2px 5px 2px black;
 }
 
 .shareWrapper {
@@ -61,6 +61,7 @@
     cursor: pointer;
     margin-right: 15px;
     transition: 700ms ease transform;
+    color: var(--text-color);
 }
 
 .shareOption:hover {
@@ -81,19 +82,18 @@
     border: none;
     padding: 10px;
     border-radius: 10px;
-    background:  rgb(124, 39, 56);
+    background:  var(--main-color);
     background-blend-mode: darken;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: 300ms ease background-color , 100ms linear transform;
+    transition: 300ms ease background-color , 100ms ease transform;
     margin-top: 5px;
 }
 
 .shareBtn:hover {
-    border: 1px solid crimson;
-    color: crimson;
-    background-color: white;
+    color: white;
+    background-color: var(--main-hover-color);
 }
 
 .shareBtn:active {
