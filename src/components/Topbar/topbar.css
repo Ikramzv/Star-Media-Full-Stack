@@ -1,7 +1,7 @@
 .topbar-container {
     width: 100vw;
     height: 50px;
-    background-color: rgb(97, 8, 26);
+    background-color: var(--main-color);
     display: flex;
     align-items: center;
     position: sticky;
@@ -129,13 +129,13 @@
     width: 200px;
     min-height: 60px;
     z-index: 1000;
-    background-color: rgb(88, 16, 31);
+    background-color: var(--main-color);
     display: flex;
     flex-direction: column;
     transform-origin: top;
     list-style: none;
     transform: scaleY(0);
-    transition: 200ms ease transform;
+    transition: var(--transition);
 }
 
 .dropdownList.active {
@@ -157,7 +157,7 @@
 }
 
 .dropdownItem:hover {
-    background-color: rgb(119, 38, 54);
+    background-color: var(--main-hover-color);
 }
 
 .closeDropdown {
@@ -167,10 +167,11 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: rgb(73, 5, 19);
+    background-color: var(--secondary-color);
     cursor: pointer;
-    color: rgb(220, 125, 144);
-    transition: 250ms ease transform !important;
+    color: white;
+    transition: var(--transition) !important;
+    transition-property: var(--transition-property-bgcolor), transform;
 }
 
 .closeDropdown:active {
