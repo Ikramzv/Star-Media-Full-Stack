@@ -1,17 +1,10 @@
-import React, { useMemo } from "react";
-import withStore from "../../hocs/withStore";
+import React from "react";
+import { shallowEqual, useSelector } from "react-redux";
 
-function NotFound({
-  incomingData,
-  setShownPosts,
-  shownPosts,
-  profileUser,
-  posts,
-  state,
-}) {
-  const { user } = useMemo(() => state, Object.values(state));
+function NotFound({ incomingData, setPostType, postType, profileUser, posts }) {
+  const user = useSelector((state) => state.user, shallowEqual);
   const handleClick = (e) => {
-    setShownPosts("additionalPosts");
+    setPostType("additionalPosts");
   };
 
   if (profileUser?._id) {
@@ -58,7 +51,7 @@ function NotFound({
             Go to top
           </button>
         </div>
-      ) : incomingData[shownPosts].length < 5 ? (
+      ) : incomingData[postType].length < 5 ? (
         <div className="additional">
           {!posts.length ? (
             <>
@@ -78,4 +71,4 @@ function NotFound({
   );
 }
 
-export default withStore(NotFound, ["user"]);
+export default React.memo(NotFound);
