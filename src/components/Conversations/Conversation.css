@@ -4,14 +4,18 @@
     cursor: pointer;
     border-radius: 4px;
     position: relative;
+    transition: var(--transition);
+    color: var(--text-color);
 }
 
 .chatList:hover {
-    background-color: rgba(0, 0, 0, 0.185);
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .chatList.active {
-    background-color: rgba(0, 0, 0, 0.185);
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .chatListItem {
