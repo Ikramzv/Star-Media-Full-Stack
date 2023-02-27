@@ -16,7 +16,7 @@
 
 .additional > h4 {
     font-size: 16px;
-    color: rgba(0, 0, 0, 0.763);
+    color: var(--text-color);
     text-align: center;
     line-height: 1.3;
     width: 70%;
@@ -25,13 +25,13 @@
 .additional > p {
     font-size: 14px;
     line-height: 1.6;
-    color: rgba(0, 0, 0, 0.419);
+    color: var(--text-color);
 }
 
 .additional > button {
     cursor: pointer;
-    background-color: black;
-    color: white;
+    background-color: var(--text-color);
+    color: var(--body-color);
     border-radius: 4px;
     font-size: 14x;
     text-transform: uppercase;
