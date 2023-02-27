@@ -30,7 +30,7 @@
     align-items: center;
     gap: 10px;
     padding-bottom: 10px;
-    background-color: white;
+    background-color: var(--body-color);
 }
 
 .chatOnline {
@@ -112,7 +112,8 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    border: 1px dotted black;
+    border: 1px dotted var(--text-color);
+    color: var(--text-color);
 }
 
 @media (max-width: 768px) {
