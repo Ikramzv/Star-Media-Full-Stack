@@ -14,7 +14,6 @@ import Comment from "./Comment";
 import Edit from "./Edit";
 import Like from "./Like";
 import "./Post.css";
-import Save from "./Save";
 
 const regexpUrl =
   /(http|https):\/\/([A-z]?(\.))?[A-z\d\.\_\-]{1,}(\/[A-z\d\S\_\.\-]{1,})?/gi; // url
@@ -152,9 +151,9 @@ function Post({ post, pid }) {
             />
             <Comment post={post} />
           </div>
-          <div className="postBottomLeft">
+          {/* <div className="postBottomLeft">
             <Save post={post} user={user} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
