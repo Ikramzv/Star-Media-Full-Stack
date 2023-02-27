@@ -169,7 +169,7 @@ function EachComment({ comment, user, postId }) {
             <button onClick={handleClick} className="comment_actions">
               <MoreHorizSharpIcon />
             </button>
-            <div className={`comment_action_options ${open && "open"}`}>
+            <div className={`comment_action_options ${open ? "open" : ""}`}>
               <button onClick={handleDelete}>
                 <DeleteOutlineIcon />
               </button>
