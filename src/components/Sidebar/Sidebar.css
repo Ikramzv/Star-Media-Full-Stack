@@ -4,7 +4,7 @@
     overflow-y: auto;
     position: sticky;
     top: 50px;
-    box-shadow: 2px 0 5px -1px black;
+    box-shadow: 2px 0 5px -1px var(--shadow-color);
 }
 
 .hamburger {
@@ -28,6 +28,7 @@
     width: 100%;
     padding: 20px 12px;
     overflow-y: auto;
+    background-color: var(--body-color);
 }
 
 .sidebarWrapper::-webkit-scrollbar {
@@ -51,6 +52,7 @@
     margin-bottom: 10px;
     overflow: hidden;
     border: 1px solid white;
+    background-color: var(--text-color);
 }
 
 .mode-switcher-container:has( .mode-switcher-button:checked) {
@@ -129,6 +131,16 @@
     align-items: center;
     margin-bottom: 20px;
     cursor: pointer;
+    color: var(--text-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: var(--transition);
+    transition-property: var(--transition-property-bgcolor);
+}
+
+.sidebarListItem:hover {
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .sidebarIcon {
@@ -154,6 +166,10 @@
     box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.434);
 }
 
+.sidebarHr + h3 {
+    color: var(--text-color);
+}
+
 .sidebarFriendList {
     list-style: none;
     padding: 0;
@@ -170,10 +186,14 @@
     border-radius: 8px;
     transition: 300ms ease background-color;
     padding: 8px 10px;
+    color: var(--text-color);
+    transition: var(--transition);
+    transition-property: var(--transition-property-bgcolor);
 }
 
 .sidebarFriend:hover {
-    background-color: rgba(0, 0, 0, 0.184);
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .sidebarFriendImg {
@@ -203,7 +223,7 @@
 }
 
 .searchedFriendList {
-    background-color: white;
+    background-color: var(--body-color);
     position: absolute;
     left: 0;
     right: 0;
@@ -217,6 +237,10 @@
     transition: 200ms ease;
     transform: scaleY(0);
     transform-origin: top left;
+}
+
+.searchedFriendList > h4 {
+    color: var(--text-color);
 }
 
 .searchedFriendList.active {
@@ -236,10 +260,12 @@
     border-radius: 10px;
     transition: 200ms ease;
     cursor: pointer;
+    color: var(--text-color);
 }
 
 .searchedListItem:hover {
-    background-color: rgba(0, 0, 0, 0.184);
+    background-color: var(--main-hover-color);
+    color: white;
 }
 
 .searchedListItemImg {
