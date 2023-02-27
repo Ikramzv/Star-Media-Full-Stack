@@ -1,18 +1,28 @@
+.grid_container {
+    background-color: var(--body-color) !important;
+    color: var(--text-color);
+}
+
 .comment_actions_container {
     position: relative;
     margin-left: auto;
 }
 
 .comment_actions {
-    --action-color: black;
+    --action-color: var(--text-color);
+    --action-text-color: var(--body-color);
+}
+
+.comment_actions:active {
+    scale: 0.90;
 }
 
 .comment_action_options > button:first-child {
-    --action-color: rgb(146, 26, 50);
+    --action-color: var(--crimson);
 }
 
 .comment_action_options > button:last-child {
-    --action-color: rgb(80, 80, 187);
+    --action-color: var(--light-blue);
 }
 
 .comment_actions, .comment_action_options > button {
@@ -22,11 +32,12 @@
     padding: 3px 6px;
     cursor: pointer;
     transition: 200ms ease;
+    color: var(--text-color);
 }
 
 .comment_actions:hover , .comment_action_options > button:hover {
     background-color: var(--action-color);
-    color: white !important;
+    color: var(--action-text-color,white);
 }
 
 .comment_action_options {
@@ -41,7 +52,7 @@
     top: 105%;
     width: 100%;
     gap: 3px;
-    background-color: white;
+    background-color: var(--body-color);
 }   
 
 .comment_action_options.open {
