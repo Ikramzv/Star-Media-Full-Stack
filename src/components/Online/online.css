@@ -2,11 +2,22 @@
     transform: scale(0.7);
 }
 
-
 .rightbarFriend {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    transition: var(--transition) background-color;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.rightbarFriend:hover {
+    background-color: var(--main-hover-color);
+}
+
+.rightbarFriend:hover .rightbarUsername {
+    color: white;
 }
 
 .rightbarImgContainer {
@@ -34,11 +45,12 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background-color: rgb(4, 87, 4);
-    border: 2px solid white;
+    background-color: var(--green);
+    border: 2px solid var(--body-color);
 }
 
 .rightbarUsername {
     font-size: 16px;
     font-weight: 500;
+    color: var(--text-color);
 }
