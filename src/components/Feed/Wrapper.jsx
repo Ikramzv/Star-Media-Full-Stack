@@ -6,18 +6,18 @@ import NotFound from "./NotFound";
 
 let fetchFromNow = true;
 
-function figureOutSince(shownPosts, posts, since) {
-  if (shownPosts === "mainPosts") {
+function figureOutSince(postType, posts, since) {
+  if (postType === "mainPosts") {
     return posts.at(-1)?.createdAt;
   }
   if (
     since.current === null &&
-    shownPosts === "additionalPosts" &&
+    postType === "additionalPosts" &&
     fetchFromNow
   ) {
     fetchFromNow = false;
     return new Date().toISOString();
-  } else if (shownPosts === "additionalPosts") {
+  } else if (postType === "additionalPosts") {
     return posts.at(-1)?.createdAt;
   }
 }
@@ -35,68 +35,62 @@ function Wrapper({
   const wrapperRef = useRef(null);
   const profileId = useMemo(() => profileUser?._id, [profileUser]);
   const loading = useMemo(() => state.loading, [state.loading]);
-  const [shownPosts, setShownPosts] = useState(
-    profileId ? "mainPosts" : pageState
-  );
+  const [postType, setPostType] = useState(profileId ? "mainPosts" : pageState);
   const [scrollY, setScrollY] = useState(0);
   const [incomingData, setIncomingData] = useState({
-    mainPosts:
-      profileId || pageState !== "additionalPosts" // If current user is on profile page or pageState hasn't been set to additionalPosts so far , it means that it still points to mainPosts otherwise additionalPosts must be fetched
-        ? new Array(posts.length % 5 > 0 ? posts.length % 5 : 5) // If there were posts previosly , then set the incoming data to posts.length so that there won't more fetch as of now
-        : [],
-    additionalPosts: new Array(posts.length % 5 > 0 ? posts.length % 5 : 5),
+    mainPosts: profileId || pageState !== "additionalPosts" ? new Array(5) : [],
+    additionalPosts: new Array(5),
   });
+
   const debouncedScrollY = useDebounce(scrollY, 250);
+
   useEffect(() => {
     if (profileId) return;
-    if (shownPosts === "additionalPosts") pageState = "additionalPosts";
-  }, [profileId, shownPosts]);
+    if (postType === "additionalPosts") pageState = "additionalPosts";
+  }, [profileId, postType]);
+
+  useEffect(() => {
+    const data = new Array(posts.length % 5 > 0 || posts.length === 0 ? 0 : 5);
+    setIncomingData((prev) => ({ ...prev, [postType]: data }));
+  }, [posts.length]);
 
   const since = useRef(null);
 
   const fetchPosts = async (profileId) => {
-    since.current = figureOutSince(shownPosts, posts, since);
+    since.current = figureOutSince(postType, posts, since);
     if (typeof since.current === "undefined") return;
+
     const container = wrapperRef.current;
     const limit = window.innerHeight + window.scrollY + 1200;
-    if (limit > container?.offsetHeight) {
-      if (incomingData[shownPosts].length >= 5 && !loading) {
-        if (profileId) {
-          const data = await loadPosts({
-            since: since.current,
-            profileId,
-          }).unwrap();
-          setIncomingData((prev) => ({ ...prev, mainPosts: data }));
-        } else {
-          if (shownPosts === "mainPosts") {
-            const data = await loadPosts(
-              { since: since.current },
-              true
-            ).unwrap();
-            setIncomingData((prev) => ({ ...prev, mainPosts: data }));
-          } else {
-            const data = await loadAdditionalPosts(
-              since.current,
-              true
-            ).unwrap();
-            setIncomingData((prev) => ({ ...prev, additionalPosts: data }));
-          }
-        }
+
+    if (limit < container?.offsetHeight) return; // check scroll limit
+    if (incomingData[postType].length < 5 || loading) return; // if loading is true , then don't send additional request
+    let items = [];
+    if (profileId) {
+      const data = await loadPosts({
+        since: since.current,
+        profileId,
+      }).unwrap(); // fetch profile posts
+      items = data;
+    } else {
+      if (postType === "mainPosts") {
+        const data = await loadPosts({ since: since.current }, true).unwrap(); // fetch timeline posts
+        items = data;
+      } else {
+        const data = await loadAdditionalPosts(since.current, true).unwrap(); // fetch others' posts
+        items = data;
       }
     }
+
+    if (items.length === 0)
+      setIncomingData((prev) => ({ ...prev, [postType]: items }));
   };
 
-  useEffect(() => {
-    if (shownPosts === "additionalPosts") {
-      since.current = null;
-      fetchPosts(null);
-    }
-  }, [shownPosts]);
-
   useUpdateEffect(() => {
-    if (profileId) fetchPosts(profileId);
-    else fetchPosts(null);
-  }, [debouncedScrollY, profileId]);
+    // fetch others' posts which is sorted by createdAt from current time
+    if (postType === "additionalPosts") since.current = null;
+    fetchPosts(profileId || null);
+  }, [debouncedScrollY, profileId, postType]);
 
   useEffect(() => {
     const handleOnScroll = (e) => {
@@ -116,8 +110,8 @@ function Wrapper({
       {!loading ? (
         <NotFound
           incomingData={incomingData}
-          setShownPosts={setShownPosts}
-          shownPosts={shownPosts}
+          setPostType={setPostType}
+          postType={postType}
           profileUser={profileUser}
           posts={posts}
         />
