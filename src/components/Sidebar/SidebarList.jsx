@@ -11,13 +11,11 @@ import {
 } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import ModeSwitcher from "./ModeSwitcher";
 
 function SidebarList() {
   const navigate = useNavigate();
   return (
     <>
-      <ModeSwitcher />
       <ul className="sidebarList">
         <li className="sidebarListItem">
           <RssFeed className="sidebarIcon" />

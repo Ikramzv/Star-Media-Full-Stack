@@ -3,6 +3,7 @@ import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { injectEndpoints } from "../../api";
 import CloseFriend from "../CloseFriends/CloseFriend";
+import ModeSwitcher from "./ModeSwitcher";
 import "./Sidebar.css";
 import SidebarForMessenger from "./SidebarForMessenger";
 import SidebarList from "./SidebarList";
@@ -17,7 +18,7 @@ function Sidebar({ messenger, currentChat }) {
           query: (id) => ({
             url: `/users/followings/${id}`,
           }),
-          transformResponse: (res) => res.followings,
+          transformResponse: (res) => res?.followings,
         }),
       }),
     });
@@ -47,6 +48,7 @@ function Sidebar({ messenger, currentChat }) {
           Close
         </button>
         <div className="sidebarWrapper">
+          <ModeSwitcher />
           {messenger ? (
             <SidebarForMessenger
               currentChat={currentChat}
