@@ -23,6 +23,7 @@
 
 .rightbarTitle {
     margin-bottom: 10px;
+    color: var(--text-color);
 }
 
 .rightbarFriendList {
