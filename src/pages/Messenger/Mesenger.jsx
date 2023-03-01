@@ -13,7 +13,10 @@ import "./mesenger.css";
 import MessengerContainer from "./MessengerContainer";
 
 function Mesenger({ state }) {
-  const { messages, currentChat } = useMemo(() => state, Object.values(state));
+  const { messages, currentChat, user } = useMemo(
+    () => state,
+    Object.values(state)
+  );
   const dispatch = useDispatch();
   const { id: convId } = useParams();
   const loading = useRef(false);
@@ -52,10 +55,12 @@ function Mesenger({ state }) {
           <>
             <MessengerContainer loading={loading}>
               {messages?.length ? (
-                messages?.map((m, i) => {
+                messages.map((m, i) => {
                   return (
                     <Message
-                      receiver={currentChat?.receiver}
+                      receiverId={currentChat?.members.find(
+                        (uid) => uid !== user._id
+                      )}
                       message={m}
                       key={i}
                     />
