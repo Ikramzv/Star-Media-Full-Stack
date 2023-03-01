@@ -32,7 +32,7 @@ function Auth({ children }) {
   const { isLoading } = useCallMeQuery(null, {
     refetchOnReconnect: true,
     refetchOnFocus: true,
-    skip: authUser !== null,
+    skip: authUser !== null || window.location.pathname === "/login",
   });
 
   useEffect(() => {
