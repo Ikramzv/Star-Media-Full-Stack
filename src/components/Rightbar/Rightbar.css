@@ -31,6 +31,7 @@
     margin: 0;
     list-style: none;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 35vh;
 }
 
@@ -77,7 +78,7 @@
         position: fixed;
         width: 100vw;
         height: 100vh;
-        background-color: white;
+        background-color: var(--body-color);
         z-index: 100000;
         top: 0;
         left: 0;
