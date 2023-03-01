@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { injectMutation } from "../../api/utils";
-import Buttons from "../../common/Buttons";
+import { injectEndpoints } from "../../api";
+
+import Buttons from "../../common/Button/Buttons";
 import { setUser } from "../../slices/userReducer";
 import "./login.css";
 
@@ -12,14 +13,17 @@ function Login() {
     password: "",
   });
   const { useLoginMutation } = useMemo(() => {
-    return injectMutation(
-      (body) => ({
-        body,
-        url: "/auth/login",
-        method: "POST",
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        login: builder.mutation({
+          query: (body) => ({
+            body,
+            url: "/auth/login",
+            method: "POST",
+          }),
+        }),
       }),
-      "login"
-    );
+    });
   }, []);
   const [login, { isLoading }] = useLoginMutation({});
   const dispatch = useDispatch();

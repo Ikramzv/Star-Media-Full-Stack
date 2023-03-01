@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { injectMutation } from "../../api/utils";
-import Buttons from "../../common/Buttons";
+import { injectEndpoints } from "../../api";
+import Buttons from "../../common/Button/Buttons";
 import { setUser } from "../../slices/userReducer";
 import "./register.css";
 import UserImage from "./UserImage";
@@ -22,14 +22,17 @@ function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { useRegisterMutation } = useMemo(() => {
-    return injectMutation(
-      (body) => ({
-        body,
-        method: "POST",
-        url: "/auth/register",
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        register: builder.mutation({
+          query: (body) => ({
+            body,
+            method: "POST",
+            url: "/auth/register",
+          }),
+        }),
       }),
-      "register"
-    );
+    });
   }, []);
 
   const [register, { isLoading }] = useRegisterMutation();
