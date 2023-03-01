@@ -7,7 +7,7 @@
     box-sizing: border-box;
 }
 
-:root {
+body {
     --main-color: rgb(80, 8, 23);
     --body-color: white;
     --text-color: black;
@@ -27,7 +27,7 @@
     --transition-property-bgcolor: background-color;
 }
 
-:root:has(#root .sidebar .sidebarWrapper .mode-switcher .mode-switcher-container .mode-switcher-button:checked) {
+body[data-theme="dark"] {
     --main-color: rgb(47, 10, 66);
     --body-color: rgb(25, 3, 30);
     --border-color: rgb(75, 15, 99);
@@ -39,16 +39,6 @@
     --green: rgb(29, 226, 29);
     --blue: rgba(1, 1, 38, 0.458);
     --light-blue: rgba(0, 251, 255, 0.458);
-}
-
-div {
-    transition: var(--transition);
-    transition-property: var(--transition-property-bgcolor);
-}
-
-h1,h2,h3,h4,h5,h6,span,p,li,a {
-    transition: var(--transition);
-    transition-property: var(--transition-property-color);
 }
 
 

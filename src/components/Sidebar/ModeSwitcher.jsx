@@ -10,6 +10,7 @@ function ModeSwitcher() {
 
   useEffect(() => {
     localStorage.setItem("theme", mode);
+    document.body.setAttribute("data-theme", mode);
   }, [mode]);
 
   return (
