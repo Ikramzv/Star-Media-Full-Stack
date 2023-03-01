@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import withStore from "../../hocs/withStore";
 import useDebounce from "../../hooks/useDebounce";
 import useUpdateEffect from "../../hooks/useUpdateEffect";
@@ -33,7 +34,7 @@ function Wrapper({
   state,
 }) {
   const wrapperRef = useRef(null);
-  const profileId = useMemo(() => profileUser?._id, [profileUser]);
+  const { id: profileId } = useParams();
   const loading = useMemo(() => state.loading, [state.loading]);
   const [postType, setPostType] = useState(profileId ? "mainPosts" : pageState);
   const [scrollY, setScrollY] = useState(0);
@@ -49,22 +50,20 @@ function Wrapper({
     if (postType === "additionalPosts") pageState = "additionalPosts";
   }, [profileId, postType]);
 
-  useEffect(() => {
-    const data = new Array(posts.length % 5 > 0 || posts.length === 0 ? 0 : 5);
-    setIncomingData((prev) => ({ ...prev, [postType]: data }));
-  }, [posts.length]);
-
   const since = useRef(null);
 
-  const fetchPosts = async (profileId) => {
+  const fetchPosts = async (profileId, initialRequest) => {
     since.current = figureOutSince(postType, posts, since);
+    if (initialRequest && posts.length === 0) since.current = null; // If it is initialRequest , then set since.current = null
     if (typeof since.current === "undefined") return;
 
     const container = wrapperRef.current;
     const limit = window.innerHeight + window.scrollY + 1200;
 
-    if (limit < container?.offsetHeight) return; // check scroll limit
-    if (incomingData[postType].length < 5 || loading) return; // if loading is true , then don't send additional request
+    // if loading is true , then don't send additional request
+    if ((limit < container?.offsetHeight || loading) && !initialRequest) return; // check scroll limit
+    if (incomingData[postType].length < 5 && !initialRequest) return;
+
     let items = [];
     if (profileId) {
       const data = await loadPosts({
@@ -82,15 +81,21 @@ function Wrapper({
       }
     }
 
-    if (items.length === 0)
-      setIncomingData((prev) => ({ ...prev, [postType]: items }));
+    // incomingData for awaring of how many posts fetched from db
+    // If the number of posts fetched is less than 5 , then it is time to see others' posts
+    setIncomingData((prev) => ({ ...prev, [postType]: items })); // Updates how many posts fetched
   };
+
+  useEffect(() => {
+    const initialRequst = true;
+    fetchPosts(profileId || null, initialRequst);
+  }, [profileId]);
 
   useUpdateEffect(() => {
     // fetch others' posts which is sorted by createdAt from current time
     if (postType === "additionalPosts") since.current = null;
     fetchPosts(profileId || null);
-  }, [debouncedScrollY, profileId, postType]);
+  }, [debouncedScrollY, postType]);
 
   useEffect(() => {
     const handleOnScroll = (e) => {

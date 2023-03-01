@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { injectEndpoints, updateQueryData } from "../../api";
 import Modal from "../../Modal/Modal";
@@ -52,7 +52,7 @@ function Feed({ profileId, profileUser }) {
               since ? `?since=${since}` : ""
             }`,
           }),
-          transformResponse(res) {
+          transformResponse(res, m, arg) {
             if (!res.length) return res;
             dispatch(
               updateQueryData("posts", { since: null }, (data) => {
@@ -65,7 +65,7 @@ function Feed({ profileId, profileUser }) {
       }),
     });
   }, []);
-  const [loadPosts, meta] = useLazyPostsQuery();
+  const [loadPosts] = useLazyPostsQuery();
   const [loadAdditionalPosts] = useLazyAdditionalPostsQuery();
   const baseQck = `posts(${serialize({ since: null })})`; // qck : query cache key
   const profileQck = `posts(${serialize({
@@ -80,13 +80,6 @@ function Feed({ profileId, profileUser }) {
     queries[profileQck]?.data, // profile posts
     queries[baseQck]?.data, // home page posts,
   ]);
-
-  useEffect(() => {
-    if (!profileId) loadPosts({ since: null }, true);
-    else {
-      loadPosts({ since: null, profileId }, true);
-    }
-  }, [profileId]);
 
   return (
     <div className="feed">
