@@ -1,0 +1,56 @@
+.action-buttons-container {
+    position: relative;
+    margin-left: auto;
+}
+
+.actions-button {
+    --action-color: var(--text-color);
+    --action-text-color: var(--body-color);
+}
+
+.actions-button:active {
+    scale: 0.90;
+}
+
+.action-buttons-options > button:first-child {
+    --action-color: var(--crimson);
+}
+
+.action-buttons-options > button:last-child {
+    --action-color: var(--light-blue);
+}
+
+.actions-button, .action-buttons-options > button {
+    background-color: transparent;
+    border: 1px solid var(--action-color);
+    border-radius: 8px;
+    padding: 3px 6px;
+    cursor: pointer;
+    transition: 200ms ease;
+    color: var(--text-color);
+}
+
+.actions-button:hover , .action-buttons-options > button:hover {
+    background-color: var(--action-color);
+    color: var(--action-text-color,white);
+}
+
+.action-buttons-options {
+    transform: scaleY(0);
+    transition: 150ms ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform-origin: top;
+    position: absolute;
+    left: 0;
+    top: 105%;
+    width: 100%;
+    gap: 3px;
+    background-color: var(--body-color);
+}   
+
+.action-buttons-options.open {
+    transform: scaleY(1) !important;
+    z-index: 200 !important;
+}
