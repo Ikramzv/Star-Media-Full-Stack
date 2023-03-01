@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -53,7 +54,13 @@ function Auth({ children }) {
     };
   }, [authUser]);
 
-  return isLoading ? <div className="cover"></div> : children;
+  return isLoading ? (
+    <div className="cover">
+      <CircularProgress color="error" className="loading" />
+    </div>
+  ) : (
+    children
+  );
 }
 
 export default Auth;
