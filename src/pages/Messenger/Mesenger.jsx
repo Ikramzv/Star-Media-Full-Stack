@@ -59,7 +59,7 @@ function Mesenger({ state }) {
                   return (
                     <Message
                       receiverId={currentChat?.members.find(
-                        (uid) => uid !== user._id
+                        (uid) => uid !== user?._id
                       )}
                       message={m}
                       key={i}
