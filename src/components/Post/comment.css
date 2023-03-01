@@ -1,63 +1,11 @@
-.grid_container {
-    background-color: var(--body-color) !important;
-    color: var(--text-color);
-}
-
-.comment_actions_container {
+.grid_container.MuiGrid-root.MuiGrid-container {
     position: relative;
-    margin-left: auto;
-}
-
-.comment_actions {
-    --action-color: var(--text-color);
-    --action-text-color: var(--body-color);
-}
-
-.comment_actions:active {
-    scale: 0.90;
-}
-
-.comment_action_options > button:first-child {
-    --action-color: var(--crimson);
-}
-
-.comment_action_options > button:last-child {
-    --action-color: var(--light-blue);
-}
-
-.comment_actions, .comment_action_options > button {
-    background-color: transparent;
-    border: 1px solid var(--action-color);
-    border-radius: 8px;
-    padding: 3px 6px;
-    cursor: pointer;
-    transition: 200ms ease;
-    color: var(--text-color);
-}
-
-.comment_actions:hover , .comment_action_options > button:hover {
-    background-color: var(--action-color);
-    color: var(--action-text-color,white);
-}
-
-.comment_action_options {
-    transform: scaleY(0);
-    transition: 150ms ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transform-origin: top;
-    position: absolute;
-    left: 0;
-    top: 105%;
-    width: 100%;
-    gap: 3px;
     background-color: var(--body-color);
-}   
-
-.comment_action_options.open {
-    transform: scaleY(1);
-    z-index: 200;
+    color: var(--text-color);
+    width: 80vw;
+    height: 85vh;
+    overflow: hidden;
+    border-radius:10px;
 }
 
 .comment_input {
@@ -78,4 +26,11 @@
     background: var(--comment-color);
     color: white;
     border: none;
+}
+
+
+@media (max-width: 768px) {
+    .grid_container.MuiGrid-root.MuiGrid-container {
+        width: 90vw ;
+    }
 }
