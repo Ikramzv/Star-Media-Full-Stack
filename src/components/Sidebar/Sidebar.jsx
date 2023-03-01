@@ -22,7 +22,7 @@ function Sidebar({ messenger, currentChat }) {
         }),
       }),
     });
-  }, [user?._id]);
+  }, []);
 
   const { data: followings, isLoading } = useGetFollowingsQuery(user?._id);
 
