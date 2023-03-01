@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { injectEndpoints } from "../../api";
 import useRegex from "../../hooks/useRegex";
+import { regexUrl } from "../../regex/url";
 import {
   bothHomeProfileForTheCache,
   invalidatePostTag,
@@ -14,9 +15,6 @@ import Comment from "./Comment";
 import Edit from "./Edit";
 import Like from "./Like";
 import "./Post.css";
-
-const regexpUrl =
-  /(http|https):\/\/([A-z]?(\.))?[A-z\d\.\_\-]{1,}(\/[A-z\d\S\_\.\-]{1,})?/gi; // url
 
 function Post({ post, pid }) {
   const [disabled, setDisabled] = useState(false);
@@ -70,7 +68,7 @@ function Post({ post, pid }) {
   const [likePost] = useLikePostMutation();
   const [removePost] = useDeletePostMutation();
 
-  const desc = useRegex(regexpUrl, post?.desc, []);
+  const desc = useRegex(regexUrl, post?.desc, []);
 
   const deletePost = () => {
     setDisabled(true);
