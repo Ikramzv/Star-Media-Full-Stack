@@ -19,6 +19,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding-inline: 10px;
+    padding-top: 13vh;
 }
 
 .chatBoxBottom {
