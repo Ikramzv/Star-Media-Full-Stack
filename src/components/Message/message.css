@@ -1,7 +1,23 @@
+.message-container {
+    display: flex;
+    gap: 20px;
+    animation: slide-to-top 200ms ease;
+}
+
+.message-action-buttons-container {
+    margin-bottom: auto;
+}
+
+.message-action-button-options {
+    top: -220%;
+    transform-origin: bottom;
+}
+
 .message {
     display: flex;
     flex-direction: column;
     margin-block: 20px;
+    width: 100%;
 }
 
 .messageTop {
@@ -25,6 +41,8 @@
     background-color: #1877f2;
     max-width: 300px;
     color: white;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .messageBottom > small {
@@ -32,11 +50,15 @@
     font-size: 12px;
 }
 
-.message.own {
+.message-container.own {
     align-items: flex-end;
 }
 
-.message.own .messageText {
+.message-container.own .message {
+    align-items: flex-end;
+}
+
+.message-container.own .messageText {
     background-color: rgb(245,241,241);
     color: black;
 } 
