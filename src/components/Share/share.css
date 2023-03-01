@@ -139,10 +139,6 @@
 }
 
 @media (max-width: 768px) {
-    .share {
-        max-height: 400px;
-    }
-
     .shareOption {
         flex-direction: column;
         align-items: center;
