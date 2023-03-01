@@ -30,15 +30,7 @@ function ModalComponent({ state }) {
       }}
     >
       <Fade in={open}>
-        <Grid
-          container
-          spacing={2}
-          sx={{ bgcolor: "white", width: "75vw", height: "85vh" }}
-          className="grid_container"
-          borderRadius={"10px"}
-          overflow="hidden"
-          position={"relative"}
-        >
+        <Grid container spacing={2} className="grid_container">
           {firstLoading.current || loading ? (
             <CircularProgress
               color="primary"
