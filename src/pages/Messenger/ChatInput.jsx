@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { injectEndpoints } from "../../api";
+import { injectEndpoints, updateQueryData } from "../../api";
 import { socket } from "../../constants";
 import { sendMessageAction } from "../../slices/messagesReducer";
+
+const msg = [];
 
 function ChatInput({ currentChat }) {
   const [value, setValue] = useState("");
@@ -35,6 +37,11 @@ function ChatInput({ currentChat }) {
     };
 
     dispatch(sendMessageAction(msg));
+    dispatch(
+      updateQueryData("getMessages", currentChat?._id, (messages) => {
+        return [...messages, msg];
+      })
+    );
     // trigger the mutation
     sendMessageMutation(msg);
 
@@ -45,6 +52,7 @@ function ChatInput({ currentChat }) {
     const receiverId = currentChat.members.find((id) => id !== user?._id); // find receiver
 
     socket.emit("sendMessage", {
+      // "getMessage" event is in the Socket Component
       senderId: user?._id,
       receiverId: receiverId,
       text: value,
@@ -54,12 +62,6 @@ function ChatInput({ currentChat }) {
       },
     });
   };
-
-  useEffect(() => {
-    socket.on("getMessage", (data) => {
-      dispatch(sendMessageAction(data));
-    });
-  }, []);
 
   return (
     <>
