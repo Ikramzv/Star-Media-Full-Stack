@@ -8,6 +8,7 @@
     border-radius: 6px;
     cursor: pointer;
     color: var(--text-color);
+    animation: slide 500ms cubic-bezier(0.2,0.8,0.8,0.95);
 }
 
 .chatOnlineFriend:hover {
