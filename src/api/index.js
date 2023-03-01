@@ -5,22 +5,22 @@ import { setLoading } from "../slices/loadingReducer";
 
 function baseQuery() {
   return async (args, api, extraOptions) => {
-    const headers = {};
-    if (localStorage.getItem("user")) {
-      const user = JSON.parse(localStorage.getItem("user"));
-      headers["authorization"] = `Bearer ${user.accessToken}`;
-    }
     const checkPost = /(posts|createPost)/i;
     const matches = checkPost.test(api.endpoint);
     if (matches) api.dispatch(setLoading(true));
-    const result = await fetchBaseQuery({ baseUrl: SERVER_URL, headers })(
-      args,
-      api,
-      extraOptions
-    );
+    const result = await fetchBaseQuery({
+      baseUrl: SERVER_URL,
+      credentials: "include",
+    })(args, api, extraOptions);
 
     if (matches) api.dispatch(setLoading(false));
 
+    if (
+      result.error?.originalStatus === 401 &&
+      window.location.pathname !== "/login"
+    ) {
+      window.location.replace("/login");
+    }
     return result;
   };
 }
