@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
 import { api } from "./api/index";
 import {
   commentsReducer,
@@ -27,5 +28,5 @@ const store = configureStore({
     return gdm().concat([api.middleware]);
   },
 });
-
+setupListeners(store.dispatch);
 export default store;
