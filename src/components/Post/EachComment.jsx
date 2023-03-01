@@ -1,13 +1,13 @@
-import EditIcon from "@mui/icons-material/Create";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MoreHorizSharpIcon from "@mui/icons-material/MoreHorizSharp";
 import { Stack, Typography } from "@mui/material";
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { injectEndpoints, updateQueryData } from "../../api";
+import ActionsButtons from "../../common/ActionsButton/ActionsButtons";
 import withStore from "../../hocs/withStore";
+import useRegex from "../../hooks/useRegex";
+import { regexUrl } from "../../regex/url";
 import {
   deleteComment,
   editComment,
@@ -20,7 +20,6 @@ import Like from "./Like";
 function EachComment({ comment, user, postId }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
   const {
     useLikeCommentMutation,
     useUpdateCommentMutation,
@@ -111,12 +110,7 @@ function EachComment({ comment, user, postId }) {
     dispatch(setModalClose());
   };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
-
   const handleEdit = () => {
-    setOpen(false);
     const promp = prompt("", comment.comment);
     if (!promp || comment.comment === promp) return;
     const { _id: commentId, cacheKey: ck, postId } = comment;
@@ -125,7 +119,6 @@ function EachComment({ comment, user, postId }) {
   };
 
   const handleDelete = () => {
-    setOpen(false);
     const promp = prompt(
       "Are you sure to delete the comment? Write 'yes' to go on .."
     );
@@ -134,6 +127,8 @@ function EachComment({ comment, user, postId }) {
     const { _id: commentId, postId, cacheKey: ck } = comment;
     deleteCommentMutation({ commentId, postId, ck });
   };
+
+  const commentText = useRegex(regexUrl, comment.comment, []);
 
   return (
     <Stack rowGap={1}>
@@ -165,26 +160,14 @@ function EachComment({ comment, user, postId }) {
           </span>
         </Typography>
         {comment.userId === user?._id && (
-          <div className="comment_actions_container">
-            <button onClick={handleClick} className="comment_actions">
-              <MoreHorizSharpIcon />
-            </button>
-            <div className={`comment_action_options ${open ? "open" : ""}`}>
-              <button onClick={handleDelete}>
-                <DeleteOutlineIcon />
-              </button>
-              <button onClick={handleEdit}>
-                <EditIcon />
-              </button>
-            </div>
-          </div>
+          <ActionsButtons handleDelete={handleDelete} handleEdit={handleEdit} />
         )}
       </Stack>
       <Typography
         variant="body1"
         sx={{ wordBreak: "break-word", wordWrap: "break-word" }}
       >
-        {comment.comment}
+        {commentText}
       </Typography>
       <Like
         item={comment}
