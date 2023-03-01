@@ -38,7 +38,7 @@
 
     --green: rgb(29, 226, 29);
     --blue: rgba(1, 1, 38, 0.458);
-    --light-blue: rgba(37, 37, 239, 0.458);
+    --light-blue: rgba(0, 251, 255, 0.458);
 }
 
 div {
@@ -81,4 +81,26 @@ body {
     background-color: transparent;
     border: none;
     outline: none;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(60%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-to-top {
+    0% {
+        transform: translateY(60%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
