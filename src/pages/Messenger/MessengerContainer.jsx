@@ -27,6 +27,7 @@ function MessengerContainer({ children, loading }) {
   }, []);
 
   const [getMessages] = useLazyGetMessagesQuery();
+
   useEffect(() => {
     if (convId) {
       getMessages(convId, true).then(({ data }) => dispatch(setMessages(data)));
