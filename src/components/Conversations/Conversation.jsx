@@ -1,19 +1,14 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Conversation.css";
 import MemberContainer from "./MemberContainer";
 
 function Conversation({ conversation, setBar }) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { id: convId } = useParams();
 
-  const handleClick = async () => {
+  const handleClick = async (e) => {
     setBar("close");
-    if (conversation?._id !== convId) {
-      navigate(`/messenger/${conversation?._id}`);
-    }
+    navigate(`/messenger/${conversation?._id}`);
   };
 
   return (
