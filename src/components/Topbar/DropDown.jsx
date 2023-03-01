@@ -1,14 +1,31 @@
 import { Close, Logout, Person } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { injectEndpoints } from "../../api";
 import { logOut } from "../../slices/userReducer";
 
 function DropDown({ user }) {
   const [dropDown, setDropDown] = useState(false);
   const dispatch = useDispatch();
+  const { useLogoutMutation } = useMemo(() => {
+    return injectEndpoints({
+      endpoints: (builder) => ({
+        logout: builder.mutation({
+          query: () => ({
+            method: "POST",
+            url: "/auth/logout",
+          }),
+        }),
+      }),
+    });
+  }, []);
+
+  const [logOutMutation] = useLogoutMutation();
+
   const logout = () => {
     dispatch(logOut());
+    logOutMutation();
   };
 
   const onClose = () => setDropDown(false);
